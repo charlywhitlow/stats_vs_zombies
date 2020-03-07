@@ -117,7 +117,16 @@ class SceneMain extends Phaser.Scene {
         }
     }
     jump(){
+        // jump from ground
+        if (this.player.body.touching.down) {
+            this.player.jump = 1;
         this.player.setVelocityY(-500);
+    }
+        // double jump
+        else if (this.player.jump == 1){
+            this.player.setVelocityY(-500);
+            this.player.jump = 0;
+        }
     }
     shoot(){
         console.log('shoot');
