@@ -5,6 +5,11 @@ class Align
 		obj.displayWidth=game.config.width*per;
 		obj.scaleY=obj.scaleX;
 	}
+	static scaleToGameH(obj,per)
+	{
+		obj.displayHeight=game.config.height*per;
+		obj.scaleX=obj.scaleY;
+	}
 	static centerH(obj)
 	{
 		obj.x=game.config.width/2-obj.displayWidth/2;

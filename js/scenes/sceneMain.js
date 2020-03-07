@@ -10,7 +10,7 @@ class SceneMain extends Phaser.Scene {
 
     preload()
     {
-        this.load.image('background', 'assets/backgrounds/background.png');
+        this.load.image('background', 'assets/backgrounds/pixelCity_padded.png');
         this.load.image('ground', 'assets/tiles/brickGrey.png');
         this.load.spritesheet('dude', 'assets/sprites/dude.png', {frameWidth: 32, frameHeight: 48});
         this.load.image('star', 'assets/sprites/star.png');
@@ -29,9 +29,9 @@ class SceneMain extends Phaser.Scene {
  
         // add background
         this.bg = this.add.image(0, 0, "background").setOrigin(0, 0);
-        Align.scaleToGameW(this.bg, 2.23);
+        Align.scaleToGameH(this.bg, 1);
 
-        // set up align grid for visible screen
+        // set up align grid for visible screen (16:9 screen ratio)
         this.aGrid = new AlignGrid({
             scene: this,
             rows: 16,
@@ -42,7 +42,7 @@ class SceneMain extends Phaser.Scene {
         this.blockGrid = new AlignGrid({
             scene: this,
             rows: 16,
-            cols: 20,
+            cols: Math.round(this.bg.displayWidth/this.aGrid.cellWidth),
             height: this.bg.displayHeight,
             width: this.bg.displayWidth
         });
@@ -61,11 +61,13 @@ class SceneMain extends Phaser.Scene {
         });
         this.aGrid.placeAtIndex(0, this.pauseButton);
         
-        // make floor (from, to, key)
-        this.makeFloor(180, 233, 'ground');
+        // make floor
+        let floorStart = this.blockGrid.getFirstCellInRow(10);
+        let floorEnd = this.blockGrid.getFirstCellInRow(12)-1;
+        this.makeFloor(floorStart, floorEnd, 'ground');
 
         // make player (index, gravity, bounce)
-        this.makePlayer(144, 500, 0.2);
+        this.makePlayer(1, 500, 0.2);
 
         // add player animations
         this.makePlayerAnims();
