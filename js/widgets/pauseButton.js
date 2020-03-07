@@ -15,7 +15,7 @@ class PauseButton extends Phaser.Scene {
     // create buttons
     pauseButton(){
         this.pauseButton = this.scene.add.image(0, 0, "pause").setOrigin(0, 0);
-        Align.scaleToGameW(this.pause, 0.18);
+        Align.scaleToGameW(this.pauseButton, 0.2);
         this.pauseButton.setScrollFactor(0);
         this.pauseButton.setInteractive();
         this.pauseButton.on('pointerdown', this.pause.bind(this));

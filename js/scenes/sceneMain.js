@@ -18,8 +18,8 @@ class SceneMain extends Phaser.Scene {
         this.load.image("controlBack", "assets/buttons/controlBack.png");
         this.load.image("jumpButton", "assets/buttons/jump.bmp");
         this.load.image("shootButton", "assets/buttons/shoot.bmp");
-        this.load.image("pause", "assets/buttons/pause.png");
-        this.load.image("play", "assets/buttons/play.png");
+        this.load.image("pause", "assets/buttons/pause_icon.png");
+        this.load.image("play", "assets/buttons/play_icon.png");
     }
 
     create()
