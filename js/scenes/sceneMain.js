@@ -66,8 +66,8 @@ class SceneMain extends Phaser.Scene {
         let floorEnd = this.blockGrid.getFirstCellInRow(12)-1;
         this.makeFloor(floorStart, floorEnd, 'ground');
 
-        // make player (index, gravity, bounce)
-        this.makePlayer(1, 500, 0.2);
+        // make player (index, gravity, bounce, velocity)
+        this.makePlayer(1, 500, 0.2, 300);
 
         // add player animations
         this.makePlayerAnims();
@@ -90,26 +90,14 @@ class SceneMain extends Phaser.Scene {
 
     update()
     {
-
-        // move player on keyboard input
-        this.cursors = this.input.keyboard.createCursorKeys();
-        if (this.cursors.left.isDown){
-            this.player.setVelocityX(-160);
-            this.player.play('left', true);
-        }
-        else if (this.cursors.right.isDown){
-            this.player.setVelocityX(160);
+        // start player running on landing
+        if (this.player.landed) {
+            this.player.setVelocityX(this.player.velocityX);
             this.player.play('right', true);
         }
         else{
-            this.player.setVelocityX(0);
-            this.player.play('turn');
+            this.player.play('turn', true);
         }
-        // jump
-        if (this.cursors.up.isDown && this.player.body.touching.down){
-            this.jump();
-        }
-    
     }
     
     setListeners() {
@@ -154,17 +142,14 @@ class SceneMain extends Phaser.Scene {
             this.placeBlock(i, key);
         }
     }
-    makePlayer(i, gravity=200, bounce=0.15){
+    makePlayer(i, gravity=200, bounce=0.15, velocityX=200){
         this.player = this.physics.add.sprite(0, 0, 'dude');
         this.blockGrid.placeAtIndex(i, this.player);
         Align.scaleToGameW(this.player, 1/9);
         this.player.setBounce(bounce);
-
-        // this.player.setCollideWorldBounds(true);
-        // this.player.setBounds(0, 0, this.bg.dispayHeight, this.bg.dispayWidth);
-
         this.player.setGravityY(gravity);
-        this.physics.add.collider(this.player, this.brickGroup);
+        this.player.velocityX = velocityX;
+        this.physics.add.collider(this.player, this.brickGroup, this.startRunningOnLanding, null, this);
     }
     makePlayerAnims(){
         this.anims.create({
@@ -184,6 +169,21 @@ class SceneMain extends Phaser.Scene {
             frames: [{key: 'dude', frame: 4}],
             frameRate: 20
         });
+    }
+    startRunningOnLanding(){
+        // set landed variable on first collision
+        if(!this.landed){
+            this.landed = true;
+            this.player.landed = true;
+            this.n = 1;
+        }
+        // switch off bounce after first bounce
+        if (this.player.body.touching.down && this.n < 2) {
+            this.n++;
+            if (this.n == 2) {
+                this.player.setBounce(0);
+            }
+        }
     }
     makeStars(starLocations){
         this.stars = this.physics.add.group();
