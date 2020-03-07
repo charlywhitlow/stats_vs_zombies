@@ -5,7 +5,7 @@ class TitleScene extends Phaser.Scene {
   
     preload() {
         this.load.image('titleBackground', 'assets/backgrounds/titleBackground.png');
-        this.load.image('logo', 'assets/logo.png');
+        this.load.image('logo', 'assets/logo_white.png');
         this.load.image('start', 'assets/buttons/start.png');
         this.load.audio('title_loop', ['assets/audio/title_loop.ogg', 'assets/audio/title_loop.mp3']);
     }
@@ -25,13 +25,13 @@ class TitleScene extends Phaser.Scene {
 
         // add logo
         this.logo = this.add.image(0, 0, 'logo').setOrigin(0,0);
-        this.aGrid.placeAtIndex(40, this.logo);
+        this.aGrid.placeAtIndex(10, this.logo);
         Align.scaleToGameW(this.logo, .8);
         Align.centerH(this.logo);
 
         // start button
         this.start = this.add.image(0, 0, 'start').setOrigin(0,0);
-        this.aGrid.placeAtIndex(80, this.start);
+        this.aGrid.placeAtIndex(100, this.start);
         Align.scaleToGameW(this.start, 0.3);
         Align.centerH(this.start);
         this.start.setInteractive();
