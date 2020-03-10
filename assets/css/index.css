@@ -1,3 +1,8 @@
+body{
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
 #webView{
     font-family: Arial, Helvetica, sans-serif;
     padding: 1em;
