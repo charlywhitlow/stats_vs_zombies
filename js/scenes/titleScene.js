@@ -1,6 +1,6 @@
 class TitleScene extends Phaser.Scene {
     constructor() {
-        super({ key: 'title' })
+        super({ key: 'TitleScene' })
     }
   
     preload() {
@@ -40,12 +40,11 @@ class TitleScene extends Phaser.Scene {
         // play music
         this.titleMusic = this.sound.add("title_loop");
         this.titleMusic.play();
-        this.titleMusic.stop();
+        // this.titleMusic.stop();
     }
 
     startGame(){
         this.scene.start("SceneMain", "data from title scene");
         this.titleMusic.pause();
-
     }
 }

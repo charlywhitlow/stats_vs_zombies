@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
-	<script type="text/javascript" src="js/phaser/phaser.min.js"></script>
+	<title>Zombies vs Stats</title>
+    <link rel="stylesheet" href="assets/css/index.css" />    
+
+    <script type="text/javascript" src="js/phaser/phaser.min.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 
 	<script type="text/javascript" src="js/util/UIBlock.js"></script>
@@ -10,15 +12,26 @@
 	<script type="text/javascript" src="js/util/alignGrid.js"></script>
 	<script type="text/javascript" src="js/util/eventDispatcher.js"></script>
 
+	<script type="text/javascript" src="js/scenes/introScene.js"></script>
 	<script type="text/javascript" src="js/scenes/titleScene.js"></script>
 	<script type="text/javascript" src="js/scenes/sceneMain.js"></script>
 	<script type="text/javascript" src="js/scenes/pauseScene.js"></script>
+	<script type="text/javascript" src="js/scenes/quizScene.js"></script>
 
 	<script type="text/javascript" src="js/widgets/gamePad.js"></script>
 	<script type="text/javascript" src="js/widgets/pauseButton.js"></script>
 	<script type="text/javascript" src="js/widgets/muteButton.js"></script>
 </head>
 <body>
-<div id="phaser-game"></div>
+	<div id="webView">
+		<h1>Stats Vs Zombies</h1>
+		<p>This game has been created as a prototype for a gaming platform aimed at teaching core statistics to undergraduate students.</p>
+		<p>This game is optimised for mobile, please open in a mobile browser:</p>
+		<h3><a href="https://qrco.de/zombieStats">qrco.de/zombieStats</a></h3>
+		<img src="assets/QRcode.png" alt="QR Code for website: qrco.de/zombieStats" style="height: 300px;">
+		<p>Source code and more information available at:</p>
+        <p><a href="https://github.com/charlywhitlow/stats_vs_zombies">Github</a></p>
+	</div>
+	<div id="phaser-game"></div>
 </body>
 </html>

@@ -4,26 +4,37 @@ window.onload = function() {
     if (isMobile == -1) {
         isMobile = navigator.userAgent.indexOf("Tablet");
     }
-    var w = 360;
-    var h = 640;
-    if (isMobile != -1) {
-        this.console.log("mobile");
-        w = window.innerWidth;
-        h = window.innerHeight;
-    }
 
+
+    // game config
     var config = {
         type: Phaser.AUTO,
-        width: w,
-        height: h,
-        parent: 'phaser-game',
-        scene: [TitleScene, SceneMain, PauseScene],
+        scale: {
+            mode: Phaser.Scale.FIT,
+            parent: 'phaser-game',
+            autoCenter: Phaser.Scale.CENTER_BOTH,
+            width: window.innerWidth,
+            height: window.innerHeight
+        },
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        scene: [
+            IntroScene, 
+            TitleScene, 
+            SceneMain, 
+            PauseScene,
+            QuizScene
+        ],
         physics: {
             default: 'arcade',
             arcade: {
-                debug: true
+                // debug: true
             }
-        }
+        },
     };
-    game = new Phaser.Game(config);
+
+    // launch game (mobile only)
+    if (isMobile != -1) {
+        document.getElementById("webView").style.display = "none";
+        game = new Phaser.Game(config);
+    }
 }
