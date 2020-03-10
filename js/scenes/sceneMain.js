@@ -17,7 +17,7 @@ class SceneMain extends Phaser.Scene {
         this.load.spritesheet('coin', 'assets/sprites/coin.png', {frameWidth: (127/8), frameHeight: 16});
         this.load.image('bag', 'assets/sprites/bag.png');
 
-        this.load.image("controlBack", "assets/buttons/controlBack.png");
+        this.load.image("controlBack", "assets/backgrounds/metal.png");
         this.load.image("jumpButton", "assets/buttons/jump.bmp");
         this.load.image("shootButton", "assets/buttons/shoot.bmp");
         this.load.image("pause", "assets/buttons/pause_icon.png");
