@@ -14,6 +14,8 @@ class SceneMain extends Phaser.Scene {
         this.load.image('ground', 'assets/tiles/brickGrey.png');
         this.load.spritesheet('dude', 'assets/sprites/dude.png', {frameWidth: 32, frameHeight: 48});
         this.load.image('star', 'assets/sprites/star.png');
+        this.load.spritesheet('coin', 'assets/sprites/coin.png', {frameWidth: (127/8), frameHeight: 16});
+        this.load.image('bag', 'assets/sprites/bag.png');
 
         this.load.image("controlBack", "assets/buttons/controlBack.png");
         this.load.image("jumpButton", "assets/buttons/jump.bmp");
@@ -47,13 +49,59 @@ class SceneMain extends Phaser.Scene {
             width: this.bg.displayWidth
         });
 
-        // add game pad
-        this.gamePad = new GamePad({
-            scene: this,
-            grid: this.aGrid
-        });
-        this.aGrid.placeAtIndex(108, this.gamePad);
+        // row start indexes
+        let row5 = this.blockGrid.getFirstCellInRow(5);
+        let row6 = this.blockGrid.getFirstCellInRow(6);
+        let row7 = this.blockGrid.getFirstCellInRow(7);
+        let row8 = this.blockGrid.getFirstCellInRow(8);
+        let row9 = this.blockGrid.getFirstCellInRow(9);
+        let row10 = this.blockGrid.getFirstCellInRow(10);
+        let row11 = this.blockGrid.getFirstCellInRow(11);
         
+        // make floor (need gap of min 2 blocks to fall through, row = 46 blocks)
+        let floorLocations = [
+            [row10, row10+6],
+            [row11, row11+6],
+
+            [row10+10, row10+14],
+            [row11+10, row11+14],
+
+            [row10+17, row10+21],
+            [row11+17, row11+21],
+
+            [row8+23, row8+25],
+
+            [row10+28, row10+35],
+            [row11+28, row11+35],
+
+            [row10+38, row10+45],
+            [row11+38, row11+45],
+        ];
+        this.makeFloorBlocks('ground', floorLocations);
+
+        // make player (index, gravity, bounce, velocity)
+        this.makePlayer(1, 800, 0.2, 300);
+
+        // add stars
+        // var starLocations = [5, 10, 11, 12, 13, 18, 19, 20, 30, 32, 36, 42];
+        // var starLocations = [55];
+        // this.makeStars(this.blockGrid, starLocations);
+
+        // make coins
+        var coinLocations = [
+            row9+5, 
+            row8+10, row7+11, row7+12, row7+13, row8+14, 
+            row9+18, row9+19, row9+20, 
+            row6+24, row6+25, row5+26, row6+27, 
+            row9+30, row9+31, row9+32, 
+            row7+36, row6+37,
+            row6+42, row6+43,
+        ];
+        this.makeCoins(this.blockGrid, coinLocations);
+
+        // add coin bag
+        this.makeCoinBag();
+
         // add pause button
         this.pauseButton = new PauseButton({
             scene: this,
@@ -61,21 +109,13 @@ class SceneMain extends Phaser.Scene {
         });
         this.aGrid.placeAtIndex(0, this.pauseButton);
         
-        // make floor
-        let floorStart = this.blockGrid.getFirstCellInRow(10);
-        let floorEnd = this.blockGrid.getFirstCellInRow(12)-1;
-        this.makeFloor(floorStart, floorEnd, 'ground');
+        // add game pad
+        this.gamePad = new GamePad({
+            scene: this,
+            grid: this.aGrid
+        });
+        this.aGrid.placeAtIndex(108, this.gamePad);
 
-        // make player (index, gravity, bounce, velocity)
-        this.makePlayer(1, 500, 0.2, 300);
-
-        // add player animations
-        this.makePlayerAnims();
-
-        // add stars
-        // var starLocations = [37, 40, 25, 56];
-        // this.makeStars(starLocations);
-        
         // camera
         this.cameras.main.setBounds(0, 0, this.bg.dispayWidth, 0);
         this.cameras.main.startFollow(this.player);
@@ -98,6 +138,11 @@ class SceneMain extends Phaser.Scene {
         else{
             this.player.play('turn', true);
         }
+
+        // spin coin
+        this.coins.children.iterate(function (child){
+            child.play('spin', true);
+        });
     }
     
     setListeners() {
@@ -135,15 +180,20 @@ class SceneMain extends Phaser.Scene {
         this.scene.pause();
         this.scene.launch('pauseScene', this.scene);
     }
-
     placeBlock(i, key) {
         let block = this.physics.add.sprite(0, 0, key);
         this.brickGroup.add(block);
         this.blockGrid.placeAtIndex(i, block);
         Align.scaleToGameW(block, 1/9);
-        this.brickGroup.add(block);
         block.setImmovable();
-        
+    }
+    makeFloorBlocks(key, floorLocations){
+        this.brickGroup = this.physics.add.group();
+        floorLocations.forEach(floorBlock => {
+            for (var i = floorBlock[0]; i < floorBlock[1] + 1; i++) {
+                this.placeBlock(i, key);
+            }
+        });
     }
     makeFloor(from, to, key) {
         this.brickGroup = this.physics.add.group();
@@ -159,6 +209,7 @@ class SceneMain extends Phaser.Scene {
         this.player.setGravityY(gravity);
         this.player.velocityX = velocityX;
         this.physics.add.collider(this.player, this.brickGroup, this.startRunningOnLanding, null, this);
+        this.makePlayerAnims();
     }
     makePlayerAnims(){
         this.anims.create({
@@ -181,8 +232,7 @@ class SceneMain extends Phaser.Scene {
     }
     startRunningOnLanding(){
         // set landed variable on first collision
-        if(!this.landed){
-            this.landed = true;
+        if(!this.player.landed){
             this.player.landed = true;
             this.n = 1;
         }
@@ -194,17 +244,16 @@ class SceneMain extends Phaser.Scene {
             }
         }
     }
-    makeStars(starLocations){
+    makeStars(grid, starLocations){
         this.stars = this.physics.add.group();
         starLocations.forEach(i => {
             let star = this.physics.add.sprite(0, 0, 'star');
             this.stars.add(star);
-            this.aGrid.placeAtIndex(i, star);
+            grid.placeAtIndex(i, star);
             Align.scaleToGameW(star, 1/15);    
         });
         this.stars.children.iterate(function (child){
             child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.6));
-            child.setCollideWorldBounds(true);
             child.setGravityY(300);
         });
         this.physics.add.collider(this.stars, this.brickGroup);
@@ -214,5 +263,60 @@ class SceneMain extends Phaser.Scene {
         star.disableBody(true, true);
         console.log("star collected!");
     }
+    makeCoins(grid, coinLocations){
+
+        // make coins and add
+        this.coins = this.physics.add.group();
+        coinLocations.forEach(i => {
+            let coin = this.physics.add.sprite(0, 0, 'coin');
+            this.coins.add(coin);
+            Align.scaleToGameW(coin, 1/14);
+            grid.placeAtIndex(i, coin);
+        });
+
+        // coin spin animation
+        this.anims.create({
+            key: 'spin',
+            frames: this.anims.generateFrameNumbers('coin', { start:0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        // collect coin
+        this.physics.add.overlap(this.coins, this.player, this.collectCoin, null, this);        
+    }
+    collectCoin(player, coin){
+        coin.disableBody(true, true);
+        this.coinScore += 1;
+        this.coinScoreText.setText(this.coinScore);    
+    }
+    makeCoinBag(){
+        // add coin bag
+        this.bag = this.add.image(0, 0, "bag").setOrigin(0.4, 0);
+        Align.scaleToGameH(this.bag, 1/20);
+        this.aGrid.placeAtIndex(6.5, this.bag);
+        this.bag.setScrollFactor(0);
+
+        // coin score
+        this.coinScore = 0;
+        this.coinScoreText = this.make.text({
+            x: 0,
+            y: 0,
+            padding: { x: 1, y: 4 },
+            text: this.coinScore,
+            style: {
+                fontSize: '18px',
+                fontFamily: 'Arial',
+                color: 'white',
+                align: 'center'
+            },
+            add: true
+        });
+        this.coinScoreText.setScrollFactor(0);
+        Align.scaleToGameW(this.coinScoreText, 1/22);
+        this.coinScoreText.setOrigin(-0.5, 0);
+        this.aGrid.placeAtIndex(7, this.coinScoreText);        
+    }
+
 
 }
