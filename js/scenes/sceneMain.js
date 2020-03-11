@@ -5,14 +5,16 @@ class SceneMain extends Phaser.Scene {
     }
 
     init(data){
-        console.log(data);
+        // console.log(data);
     }
 
     preload()
     {
         this.load.image('background', 'assets/backgrounds/pixelCity_padded.png');
         this.load.image('ground', 'assets/tiles/brickGrey.png');
+        
         this.load.spritesheet('dude', 'assets/sprites/dude.png', {frameWidth: 32, frameHeight: 48});
+        this.load.multiatlas('zombie', 'assets/sprites/ZombieWalk.json', 'assets/sprites');
         this.load.image('star', 'assets/sprites/star.png');
         this.load.spritesheet('coin', 'assets/sprites/coin.png', {frameWidth: (127/8), frameHeight: 16});
         this.load.image('bag', 'assets/sprites/bag.png');
@@ -28,7 +30,7 @@ class SceneMain extends Phaser.Scene {
     {
         // add event dispatcher
         this.emitter = EventDispatcher.getInstance();
- 
+
         // add background
         this.bg = this.add.image(0, 0, "background").setOrigin(0, 0);
         Align.scaleToGameH(this.bg, 1);
@@ -48,7 +50,7 @@ class SceneMain extends Phaser.Scene {
             height: this.bg.displayHeight,
             width: this.bg.displayWidth
         });
-
+        
         // row start indexes
         let row5 = this.blockGrid.getFirstCellInRow(5);
         let row6 = this.blockGrid.getFirstCellInRow(6);
@@ -57,7 +59,7 @@ class SceneMain extends Phaser.Scene {
         let row9 = this.blockGrid.getFirstCellInRow(9);
         let row10 = this.blockGrid.getFirstCellInRow(10);
         let row11 = this.blockGrid.getFirstCellInRow(11);
-        
+
         // make floor (need gap of min 2 blocks to fall through, row = 46 blocks)
         let floorLocations = [
             [row10, row10+6],
@@ -81,6 +83,10 @@ class SceneMain extends Phaser.Scene {
 
         // make player (index, gravity, bounce, velocity)
         this.makePlayer(1, 800, 0.2, 300);
+
+        // make zombies
+        let zombieLocations = [426, 452]
+        this.makeZombies(this.blockGrid, zombieLocations);
 
         // add stars
         // var starLocations = [5, 10, 11, 12, 13, 18, 19, 20, 30, 32, 36, 42];
@@ -108,7 +114,7 @@ class SceneMain extends Phaser.Scene {
             grid: this.aGrid
         });
         this.aGrid.placeAtIndex(0, this.pauseButton);
-        
+
         // add game pad
         this.gamePad = new GamePad({
             scene: this,
@@ -134,8 +140,7 @@ class SceneMain extends Phaser.Scene {
         if (this.player.landed) {
             this.player.setVelocityX(this.player.velocityX);
             this.player.play('right', true);
-        }
-        else{
+        }else{
             this.player.play('turn', true);
         }
 
@@ -143,8 +148,13 @@ class SceneMain extends Phaser.Scene {
         this.coins.children.iterate(function (child){
             child.play('spin', true);
         });
+
+        // animate zombies
+        this.zombies.children.iterate(function (child){
+            child.play('zombieLeft', true);
+        });
     }
-    
+
     setListeners() {
         this.emitter.on('CONTROL_PRESSED', this.controlPressed.bind(this));
     }
@@ -165,8 +175,8 @@ class SceneMain extends Phaser.Scene {
         // jump from ground
         if (this.player.body.touching.down) {
             this.player.jump = 1;
-        this.player.setVelocityY(-500);
-    }
+            this.player.setVelocityY(-500);
+        }
         // double jump
         else if (this.player.jump == 1){
             this.player.setVelocityY(-500);
@@ -185,7 +195,7 @@ class SceneMain extends Phaser.Scene {
         this.brickGroup.add(block);
         this.blockGrid.placeAtIndex(i, block);
         Align.scaleToGameW(block, 1/9);
-        block.setImmovable();
+        block.setImmovable();        
     }
     makeFloorBlocks(key, floorLocations){
         this.brickGroup = this.physics.add.group();
@@ -317,6 +327,61 @@ class SceneMain extends Phaser.Scene {
         this.coinScoreText.setOrigin(-0.5, 0);
         this.aGrid.placeAtIndex(7, this.coinScoreText);        
     }
+    makeZombies(grid, zombieLocations){
+        this.zombies = this.physics.add.group();
+        zombieLocations.forEach(i => {
+            let zombie = this.physics.add.sprite(0, 0, 'zombie').setOrigin(0.55);
+            zombie.body.setSize(zombie.width-50, zombie.height-100, true); // shrink bounding box
+            zombie.collided = false;            
+            this.zombies.add(zombie);
+            Align.scaleToGameW(zombie, 1/9);
+            grid.placeAtIndex(i, zombie);
+        });
 
+        // zombie animations
+        this.anims.create({
+            key: 'zombieLeft',
+            frames: [
+                { key: 'zombie', frame: 'Left1.png'},
+                { key: 'zombie', frame: 'Left2.png'},
+                { key: 'zombie', frame: 'Left3.png'},
+                { key: 'zombie', frame: 'Left4.png'},
+                { key: 'zombie', frame: 'Left5.png'},
+                { key: 'zombie', frame: 'Left6.png'},
+                { key: 'zombie', frame: 'Left7.png'},
+                { key: 'zombie', frame: 'Left8.png'},
+                { key: 'zombie', frame: 'Left9.png'},
+            ],
+            frameRate: 8,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'zombieRight',
+            frames: [
+                { key: 'zombie', frame: 'Right1.png'},
+                { key: 'zombie', frame: 'Right2.png'},
+                { key: 'zombie', frame: 'Right3.png'},
+                { key: 'zombie', frame: 'Right4.png'},
+                { key: 'zombie', frame: 'Right5.png'},
+                { key: 'zombie', frame: 'Right6.png'},
+                { key: 'zombie', frame: 'Right7.png'},
+                { key: 'zombie', frame: 'Right8.png'},
+                { key: 'zombie', frame: 'Right10.png'},
+            ],
+            frameRate: 8,
+            repeat: -1
+        });
 
+        // collision
+        this.physics.add.overlap(this.zombies, this.player, this.zombieCollision, null, this);
+    }
+    zombieCollision(player, zombie){
+        if (zombie.collided == false) {
+            zombie.collided = true;
+
+            // launch quiz scene
+            this.scene.pause();
+            this.scene.launch('QuizScene', this.scene);
+        }
+    }
 }
