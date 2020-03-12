@@ -13,8 +13,8 @@ class SceneMain extends Phaser.Scene {
         this.load.image('background', 'assets/backgrounds/pixelCity_padded.png');
         this.load.image('ground', 'assets/tiles/brickGrey.png');
         
-        this.load.spritesheet('dude', 'assets/sprites/dude.png', {frameWidth: 32, frameHeight: 48});
         this.load.multiatlas('zombie', 'assets/sprites/ZombieWalk.json', 'assets/sprites');
+        this.load.multiatlas('ninja', 'assets/sprites/NinjaGirl.json', 'assets/sprites');
         this.load.image('star', 'assets/sprites/star.png');
         this.load.spritesheet('coin', 'assets/sprites/coin.png', {frameWidth: (127/8), frameHeight: 16});
         this.load.image('bag', 'assets/sprites/bag.png');
@@ -136,15 +136,17 @@ class SceneMain extends Phaser.Scene {
 
     update()
     {
-        // start player running on landing
-        if (this.player.landed) {
+        // animate player
+        if (this.player.jumping) {
+            this.player.play('ninjaJump', true);            
+        }else if (this.player.landed) {
             this.player.setVelocityX(this.player.velocityX);
-            this.player.play('right', true);
+            this.player.play('ninjaRun', true);
         }else{
-            this.player.play('turn', true);
+            this.player.play('ninjaFall', true);
         }
 
-        // spin coin
+        // animate coins
         this.coins.children.iterate(function (child){
             child.play('spin', true);
         });
@@ -176,6 +178,7 @@ class SceneMain extends Phaser.Scene {
         if (this.player.body.touching.down) {
             this.player.jump = 1;
             this.player.setVelocityY(-500);
+            this.player.jumping = true;
         }
         // double jump
         else if (this.player.jump == 1){
@@ -212,35 +215,62 @@ class SceneMain extends Phaser.Scene {
         }
     }
     makePlayer(i, gravity=200, bounce=0.15, velocityX=200){
-        this.player = this.physics.add.sprite(0, 0, 'dude');
+        this.player = this.physics.add.sprite(0, 0, 'ninja');
+        this.player.body.setSize(this.player.width-100, this.player.height-100, true); // shrink bounding box
+        this.player.angle = -10;
         this.blockGrid.placeAtIndex(i, this.player);
         Align.scaleToGameW(this.player, 1/9);
         this.player.setBounce(bounce);
         this.player.setGravityY(gravity);
         this.player.velocityX = velocityX;
-        this.physics.add.collider(this.player, this.brickGroup, this.startRunningOnLanding, null, this);
+        this.physics.add.collider(this.player, this.brickGroup, this.playerLanding, null, this);
         this.makePlayerAnims();
     }
     makePlayerAnims(){
         this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', { start:0, end: 3}),
-            frameRate: 10,
+            key: 'ninjaRun',
+            frames: [
+                { key: 'ninja', frame: 'Run__000.png'},
+                { key: 'ninja', frame: 'Run__001.png'},
+                // { key: 'ninja', frame: 'Run__002.png'},
+                { key: 'ninja', frame: 'Run__003.png'},
+                { key: 'ninja', frame: 'Run__004.png'},
+                { key: 'ninja', frame: 'Run__005.png'},
+                { key: 'ninja', frame: 'Run__006.png'},
+                { key: 'ninja', frame: 'Run__007.png'},
+                { key: 'ninja', frame: 'Run__008.png'},
+                { key: 'ninja', frame: 'Run__009.png'},
+            ],
+            frameRate: 8,
             repeat: -1
         });
         this.anims.create({
-            key: 'right',
-            frames: this.anims.generateFrameNumbers('dude', { start:5, end: 8}),
-            frameRate: 10,
+            key: 'ninjaJump',
+            frames: [
+                { key: 'ninja', frame: 'Jump__000.png'},
+                { key: 'ninja', frame: 'Jump__001.png'},
+                { key: 'ninja', frame: 'Jump__002.png'},
+                { key: 'ninja', frame: 'Jump__003.png'},
+                { key: 'ninja', frame: 'Jump__004.png'},
+                { key: 'ninja', frame: 'Jump__005.png'},
+                { key: 'ninja', frame: 'Jump__006.png'},
+                // { key: 'ninja', frame: 'Jump__007.png'},
+                { key: 'ninja', frame: 'Jump__008.png'},
+                { key: 'ninja', frame: 'Jump__009.png'},
+            ],
+            frameRate: 8,
             repeat: -1
         });
         this.anims.create({
-            key: 'turn',
-            frames: [{key: 'dude', frame: 4}],
-            frameRate: 20
+            key: 'ninjaFall',
+            frames: [
+                { key: 'ninja', frame: 'Jump__002.png'},
+            ],
+            frameRate: 8,
+            repeat: -1
         });
     }
-    startRunningOnLanding(){
+    playerLanding(){
         // set landed variable on first collision
         if(!this.player.landed){
             this.player.landed = true;
@@ -252,6 +282,10 @@ class SceneMain extends Phaser.Scene {
             if (this.n == 2) {
                 this.player.setBounce(0);
             }
+        }
+        // landing after jump
+        if (this.player.jumping) {
+            this.player.jumping = false;
         }
     }
     makeStars(grid, starLocations){
@@ -331,7 +365,7 @@ class SceneMain extends Phaser.Scene {
         this.zombies = this.physics.add.group();
         zombieLocations.forEach(i => {
             let zombie = this.physics.add.sprite(0, 0, 'zombie').setOrigin(0.55);
-            zombie.body.setSize(zombie.width-50, zombie.height-100, true); // shrink bounding box
+            zombie.body.setSize(zombie.width-200, zombie.height-200, true); // shrink bounding box
             zombie.collided = false;            
             this.zombies.add(zombie);
             Align.scaleToGameW(zombie, 1/9);
