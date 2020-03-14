@@ -79,7 +79,12 @@ class SceneMain extends Phaser.Scene {
             [row10+38, row10+45],
             [row11+38, row11+45],
         ];
-        this.makeFloorBlocks('ground', floorLocations);
+        this.makeGround(floorLocations);
+
+        // make game floor to handle when player falls of screen
+        let from = this.blockGrid.getFirstCellInRow(this.blockGrid.rows-3);
+        let to = from + this.blockGrid.cols-1;
+        this.makeGameFloor(from, to);
 
         // make player (index, gravity, bounce, velocity)
         this.makePlayer(1, 800, 0.2, 300);
@@ -123,6 +128,7 @@ class SceneMain extends Phaser.Scene {
         this.aGrid.placeAtIndex(108, this.gamePad);
 
         // camera
+        this.cameras.main.fadeFrom(500, 0, 0, 0);
         this.cameras.main.setBounds(0, 0, this.bg.dispayWidth, 0);
         this.cameras.main.startFollow(this.player);
 
@@ -193,25 +199,25 @@ class SceneMain extends Phaser.Scene {
         this.scene.pause();
         this.scene.launch('pauseScene', this.scene);
     }
-    placeBlock(i, key) {
+    placeBlock(i, key, group) {
         let block = this.physics.add.sprite(0, 0, key);
-        this.brickGroup.add(block);
+        group.add(block);
         this.blockGrid.placeAtIndex(i, block);
         Align.scaleToGameW(block, 1/9);
-        block.setImmovable();        
+        block.setImmovable();
     }
-    makeFloorBlocks(key, floorLocations){
+    makeGround(floorLocations){
         this.brickGroup = this.physics.add.group();
         floorLocations.forEach(floorBlock => {
             for (var i = floorBlock[0]; i < floorBlock[1] + 1; i++) {
-                this.placeBlock(i, key);
+                this.placeBlock(i, 'ground', this.brickGroup);
             }
         });
     }
-    makeFloor(from, to, key) {
-        this.brickGroup = this.physics.add.group();
+    makeGameFloor(from, to){
+        this.gameFloor = this.physics.add.group();
         for (var i = from; i < to + 1; i++) {
-            this.placeBlock(i, key);
+            this.placeBlock(i, 'ground', this.gameFloor);
         }
     }
     makePlayer(i, gravity=200, bounce=0.15, velocityX=200){
@@ -223,8 +229,11 @@ class SceneMain extends Phaser.Scene {
         this.player.setBounce(bounce);
         this.player.setGravityY(gravity);
         this.player.velocityX = velocityX;
-        this.physics.add.collider(this.player, this.brickGroup, this.playerLanding, null, this);
         this.makePlayerAnims();
+
+        // collisions
+        this.physics.add.collider(this.player, this.brickGroup, this.playerLanding, null, this);
+        this.physics.add.collider(this.player, this.gameFloor, this.gameOver, null, this);
     }
     makePlayerAnims(){
         this.anims.create({
@@ -417,5 +426,10 @@ class SceneMain extends Phaser.Scene {
             this.scene.pause();
             this.scene.launch('QuizScene', this.scene);
         }
+    }
+    gameOver(){
+        // pause and launch game over scene
+        this.scene.pause();
+        this.scene.launch('GameOverScene', this.scene);
     }
 }

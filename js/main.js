@@ -5,7 +5,6 @@ window.onload = function() {
         isMobile = navigator.userAgent.indexOf("Tablet");
     }
 
-
     // game config
     var config = {
         type: Phaser.AUTO,
@@ -22,7 +21,8 @@ window.onload = function() {
             TitleScene, 
             SceneMain, 
             PauseScene,
-            QuizScene
+            QuizScene,
+            GameOverScene
         ],
         physics: {
             default: 'arcade',
