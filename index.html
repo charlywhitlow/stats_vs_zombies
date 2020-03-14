@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Zombies vs Stats</title>
+	<title>Stats vs Zombies</title>
     <link rel="stylesheet" href="assets/css/index.css" />    
 
     <script type="text/javascript" src="js/phaser/phaser.min.js"></script>
@@ -24,13 +24,18 @@
 </head>
 <body>
 	<div id="webView">
-		<h1>Stats Vs Zombies</h1>
-		<p>This game has been created as a prototype for a gaming platform aimed at teaching core statistics to undergraduate students.</p>
-		<p>This game is optimised for mobile, please open in a mobile browser:</p>
-		<h3><a href="https://qrco.de/zombieStats">qrco.de/zombieStats</a></h3>
-		<img src="assets/QRcode.png" alt="QR Code for website: qrco.de/zombieStats" style="height: 300px;">
-		<p>Source code and more information available at:</p>
-        <p><a href="https://github.com/charlywhitlow/stats_vs_zombies">Github</a></p>
+		<div id="gameIntro">
+			<h1>Stats Vs Zombies</h1>
+			<p>This game has been created as a prototype for a gaming platform aimed at teaching core statistics to undergraduate students.</p>
+			<p>This game is optimised for mobile, please open in a mobile browser:</p>
+		</div>
+		<div id="qrCode">
+			<img src="assets/QRcode.png" alt="QR Code for website: qrco.de/zombieStats" style="height: 300px;">
+			<p><a href="https://qrco.de/zombieStats">qrco.de/zombieStats</a></p>
+		</div>
+		<div id="gitBox">
+			<p>Source code and more information available at: <a href="https://github.com/charlywhitlow/stats_vs_zombies">Github</a></p>	
+		</div>
 	</div>
 	<div id="phaser-game"></div>
 </body>

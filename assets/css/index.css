@@ -19,6 +19,23 @@ p {
     font-size: 1.2em;
 }
 a, a:visited {
-    font-size: 1.4em;
     color: rgb(85, 3, 153);
+}
+#qrCode a {
+    font-size: 1.2em;
+}
+#qrCode p{
+    padding: 0;
+    margin: 0;
+}
+#gitBox{
+    padding-top: 3em;
+}
+#gitBox p{
+    padding: 0.2em;
+    margin: 0;
+}
+#gitBox a{
+    padding: 0.2em;
+    margin: 0;
 }
