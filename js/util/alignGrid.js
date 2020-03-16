@@ -65,6 +65,23 @@ class AlignGrid
 
 		this.placeAt(xx,yy,obj);
 	}
+	getXYPositionFromIndex(xIndex, yIndex){
+		let xPos = (xIndex) * this.cellWidth;
+		let yPos = (yIndex) * this.cellHeight;
+		return {x: xPos, y: yPos};
+	}
+	drawBox(xStart, yStart, xWidth, yWidth, color){
+		let xyStartPos = this.getXYPositionFromIndex(xStart, yStart);
+        this.graphics = this.scene.add.graphics({ 
+			fillStyle: {
+				color: color,
+				alpha: 1
+			},
+		});
+        let rect = new Phaser.Geom.Rectangle(xyStartPos.x, xyStartPos.y, xWidth*this.cellWidth, yWidth*this.cellHeight);
+		this.graphics.fillRectShape(rect);			
+		return rect;
+    }
 	showNumbers()
 	{
 		this.show();

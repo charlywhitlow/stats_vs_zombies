@@ -1,18 +1,29 @@
 class SceneMain extends Phaser.Scene {
-    
     constructor() {
         super('SceneMain');
     }
-
     init(data){
-        // console.log(data);
+        // set user data
+        if (data.username) {
+            this.username = data.username;
+            this.level = data.level;
+            this.gold = data.gold;
+            this.score = data.score;    
+        }else{
+            // for testing
+            this.username = 'cdog';
+            this.level = 1;
+            this.gold = 0;
+            this.score = 0;
+        }
+        console.log("welcome "+this.username+"!\nlevel: "+this.level+"\nscore: "+this.score+"\nstarting gold: "+this.gold);
     }
-
     preload()
     {
         this.load.image('background', 'assets/backgrounds/pixelCity_padded.png');
         this.load.image('ground', 'assets/tiles/brickGrey.png');
-        
+        this.load.json('questions', 'assets/data/questions.json');
+
         this.load.multiatlas('zombie', 'assets/sprites/ZombieWalk.json', 'assets/sprites');
         this.load.multiatlas('ninja', 'assets/sprites/NinjaGirl.json', 'assets/sprites');
         this.load.image('star', 'assets/sprites/star.png');
@@ -25,7 +36,6 @@ class SceneMain extends Phaser.Scene {
         this.load.image("pause", "assets/buttons/pause_icon.png");
         this.load.image("play", "assets/buttons/play_icon.png");
     }
-
     create()
     {
         // add event dispatcher
@@ -90,7 +100,11 @@ class SceneMain extends Phaser.Scene {
         this.makePlayer(1, 800, 0.2, 300);
 
         // make zombies
-        let zombieLocations = [426, 452]
+        let zombieLocations = [
+            row9+12,
+            row9+33,
+            row9+38
+        ];
         this.makeZombies(this.blockGrid, zombieLocations);
 
         // add stars
@@ -137,9 +151,13 @@ class SceneMain extends Phaser.Scene {
         // this.blockGrid.showNumbers(); // for debugging
         // this.aGrid.showNumbers(); // for debugging
 
+        // load questions for level
+        this.questions = this.cache.json.get('questions')["level"+this.level];
+        this.questionQueue = new QuestionQueue(this.questions);
+
+        // set listeners
         this.setListeners();
     }
-
     update()
     {
         // animate player
@@ -221,6 +239,7 @@ class SceneMain extends Phaser.Scene {
         }
     }
     makePlayer(i, gravity=200, bounce=0.15, velocityX=200){
+        // create player sprite
         this.player = this.physics.add.sprite(0, 0, 'ninja');
         this.player.body.setSize(this.player.width-100, this.player.height-100, true); // shrink bounding box
         this.player.angle = -10;
@@ -230,6 +249,13 @@ class SceneMain extends Phaser.Scene {
         this.player.setGravityY(gravity);
         this.player.velocityX = velocityX;
         this.makePlayerAnims();
+
+        // set player data
+        this.player.setDataEnabled();
+        this.player.data.set('username', this.username);
+        this.player.data.set('level', this.level);
+        this.player.data.set('score', this.score);
+        this.player.data.set('gold', this.gold);
 
         // collisions
         this.physics.add.collider(this.player, this.brickGroup, this.playerLanding, null, this);
@@ -340,8 +366,8 @@ class SceneMain extends Phaser.Scene {
     }
     collectCoin(player, coin){
         coin.disableBody(true, true);
-        this.coinScore += 1;
-        this.coinScoreText.setText(this.coinScore);    
+        this.player.data.list.gold += 1;
+        this.coinScoreText.setText(this.player.data.list.gold);
     }
     makeCoinBag(){
         // add coin bag
@@ -350,13 +376,12 @@ class SceneMain extends Phaser.Scene {
         this.aGrid.placeAtIndex(6.5, this.bag);
         this.bag.setScrollFactor(0);
 
-        // coin score
-        this.coinScore = 0;
+        // update coin score
         this.coinScoreText = this.make.text({
             x: 0,
             y: 0,
             padding: { x: 1, y: 4 },
-            text: this.coinScore,
+            text: this.player.data.list.gold,
             style: {
                 fontSize: '18px',
                 fontFamily: 'Arial',
@@ -371,6 +396,8 @@ class SceneMain extends Phaser.Scene {
         this.aGrid.placeAtIndex(7, this.coinScoreText);        
     }
     makeZombies(grid, zombieLocations){
+
+        // add zombies group and add zombie at each location 
         this.zombies = this.physics.add.group();
         zombieLocations.forEach(i => {
             let zombie = this.physics.add.sprite(0, 0, 'zombie').setOrigin(0.55);
@@ -381,7 +408,13 @@ class SceneMain extends Phaser.Scene {
             grid.placeAtIndex(i, zombie);
         });
 
-        // zombie animations
+        // animate zombies
+        this.zombieAnimations();
+
+        // collision
+        this.physics.add.overlap(this.zombies, this.player, this.zombieCollisionQuizScene, null, this);
+    }
+    zombieAnimations(){
         this.anims.create({
             key: 'zombieLeft',
             frames: [
@@ -414,17 +447,20 @@ class SceneMain extends Phaser.Scene {
             frameRate: 8,
             repeat: -1
         });
-
-        // collision
-        this.physics.add.overlap(this.zombies, this.player, this.zombieCollision, null, this);
+        
     }
-    zombieCollision(player, zombie){
+    zombieCollisionQuizScene(player, zombie){
+
+        // handle collision once
         if (zombie.collided == false) {
             zombie.collided = true;
 
+            // get next question
+            let question = this.questionQueue.dequeue();
+
             // launch quiz scene
             this.scene.pause();
-            this.scene.launch('QuizScene', this.scene);
+            this.scene.launch('QuizScene', {scene: this.scene, question: question});
         }
     }
     gameOver(){
