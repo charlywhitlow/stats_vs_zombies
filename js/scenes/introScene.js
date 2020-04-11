@@ -4,7 +4,7 @@ class IntroScene extends Phaser.Scene {
     }
     preload() {
         this.load.image('introBackground', 'assets/backgrounds/introBackground.png');
-        this.load.image('QR', 'assets/QRcode.png');        
+        this.load.image('QR', 'assets/QRcode.png');
     }
     create() {
         // add title background
@@ -12,15 +12,16 @@ class IntroScene extends Phaser.Scene {
         Align.scaleToGameH(this.introBg, 2);
 
         // add page elements
-        this.titleText();
-        this.introText(this.titleText, 30);
-        this.launchButton(this.introText, 60);
-        this.shareQR(this.launchButton, 60);
-        this.shareURL(this.shareQR, 10);
-        this.githubText(this.shareText, 50)
-        this.githubButton(this.githubText, 10);
+        this.createTitleText();
+        this.createIntroText(this.titleText, 30);
+        this.createLaunchButton(this.introText, 60);
+        this.createShareText(this.launchButton, 100);
+        this.createShareQR(this.shareText, 20);
+        this.createShareURL(this.shareQR, 0);
+        this.createGithubText(this.shareURL, 50)
+        this.createGithubButton(this.githubText, 0);
     }
-    titleText(){
+    createTitleText(){
         this.titleText = this.make.text({
             x: 0,
             y: 50,
@@ -37,7 +38,7 @@ class IntroScene extends Phaser.Scene {
         Align.scaleToGameW(this.titleText, .8);
         Align.centerH(this.titleText);
     }
-    introText(placeBelow, distance){
+    createIntroText(placeBelow, distance){
         let introTextY = placeBelow.y + (placeBelow.height * placeBelow._scaleY) + distance;
         this.introText = this.make.text({
             x: 0,
@@ -56,7 +57,7 @@ class IntroScene extends Phaser.Scene {
         Align.scaleToGameW(this.introText, .8);
         Align.centerH(this.introText);
     }
-    launchButton(placeBelow, distance){
+    createLaunchButton(placeBelow, distance){
         let launchY = placeBelow.y + (placeBelow.height * placeBelow._scaleY) + distance;
         this.launchButton = this.make.text({
             x: 0,
@@ -68,7 +69,7 @@ class IntroScene extends Phaser.Scene {
                 fontFamily: 'Arial',
                 color: 'white',
                 align: 'center',
-                backgroundColor: 'black',
+                backgroundColor: '#d60007',
             },
             add: true
         });
@@ -78,19 +79,13 @@ class IntroScene extends Phaser.Scene {
             this.launchGame();
         }, this);
     }
-    shareQR(placeBelow, distance){
-        let qrCodeY = placeBelow.y + (placeBelow.height * placeBelow._scaleY) + distance;
-        this.shareQR = this.add.image(0, qrCodeY, 'QR').setOrigin(0, 0);
-        Align.scaleToGameW(this.shareQR, 0.5);
-        Align.centerH(this.shareQR);        
-    }
-    shareURL(placeBelow, distance){
+    createShareText(placeBelow, distance){
         let shareY = placeBelow.y + (placeBelow.height * placeBelow._scaleY) + distance;
         this.shareText = this.make.text({
             x: 0,
             y: shareY,
             padding: { x: 10, y: 10 },
-            text: 'qrco.de/zombieStats',
+            text: 'Share with your friends:',
             style: {
                 fontSize: '64px',
                 fontFamily: 'Arial',
@@ -99,47 +94,74 @@ class IntroScene extends Phaser.Scene {
             },
             add: true
         });
-        Align.scaleToGameW(this.shareText, .4);
+        Align.scaleToGameW(this.shareText, .6);
         Align.centerH(this.shareText);
     }
-    githubText(placeBelow, distance){
+    createShareQR(placeBelow, distance){
+        let qrCodeY = placeBelow.y + (placeBelow.height * placeBelow._scaleY) + distance;
+        this.shareQR = this.add.image(0, qrCodeY, 'QR').setOrigin(0, 0);
+        Align.scaleToGameW(this.shareQR, 0.5);
+        Align.centerH(this.shareQR);
+    }
+    createShareURL(placeBelow, distance){
+        let shareY = placeBelow.y + (placeBelow.height * placeBelow._scaleY) + distance;
+        this.shareURL = this.make.text({
+            x: 0,
+            y: shareY,
+            padding: { x: 10, y: 10 },
+            text: 'users.cs.cf.ac.uk/WhitlowC/stats_vs_zombies',
+            style: {
+                fontSize: '64px',
+                fontFamily: 'Arial',
+                color: 'blue',
+                align: 'center',
+                fontStyle: 'bold'
+            },
+            add: true
+        });
+        Align.scaleToGameW(this.shareURL, .85);
+        Align.centerH(this.shareURL);
+        this.shareURL.setInteractive().on('pointerup', () => {
+            window.open('https://users.cs.cf.ac.uk/WhitlowC/stats_vs_zombies/', '_blank');
+        });
+    }
+    createGithubText(placeBelow, distance){
         let githubTextY = placeBelow.y + (placeBelow.height * placeBelow._scaleY) + distance;
         this.githubText = this.make.text({
             x: 0,
             y: githubTextY,
             padding: { x: 10, y: 10 },
-            text: 'Source code and more information available at:',
+            text: 'Source code and more information at:',
             style: {
                 fontSize: '28px',
                 fontFamily: 'Arial',
                 color: 'black',
                 align: 'center',
-                wordWrap: { width: 350 }
             },
             add: true
         });
-        Align.scaleToGameW(this.githubText, .5);
-        Align.centerH(this.githubText);        
+        Align.scaleToGameW(this.githubText, .8);
+        Align.centerH(this.githubText);
     }
-    githubButton(placeBelow, distance){
+    createGithubButton(placeBelow, distance){
         let githubY = placeBelow.y + (placeBelow.height * placeBelow._scaleY) + distance;
         this.github = this.make.text({
             x: 0,
             y: githubY,
             padding: { x: 10, y: 8 },
-            text: "github",
+            text: "github.com/charlywhitlow/stats_vs_zombies",
             style: {
                 fontSize: '24px',
                 fontFamily: 'Arial',
-                color: 'black',
+                color: 'blue',
                 align: 'center',
-                backgroundColor: 'lightgrey',
-                borderRound: '15px'
+                borderRound: '15px',
+                fontStyle: 'bold'
             },
             add: true
         });
-        Align.scaleToGameW(this.github, .18);
-        Align.centerH(this.github);        
+        Align.scaleToGameW(this.github, .8);
+        Align.centerH(this.github);
         this.github.setInteractive().on('pointerup', () => {
             window.open('https://github.com/charlywhitlow/stats_vs_zombies', '_blank');
         });
