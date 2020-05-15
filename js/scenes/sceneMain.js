@@ -70,8 +70,8 @@ class SceneMain extends Phaser.Scene {
         let row10 = this.blockGrid.getFirstCellInRow(10);
         let row11 = this.blockGrid.getFirstCellInRow(11);
 
-        // make floor (need gap of min 2 blocks to fall through, row = 46 blocks)
-        let floorLocations = [
+        // make platforms (nb- need gap of min 2 blocks to fall through. row = 46 blocks)
+        let platformLocations = [
             [row10, row10+6],
             [row11, row11+6],
 
@@ -89,7 +89,7 @@ class SceneMain extends Phaser.Scene {
             [row10+38, row10+45],
             [row11+38, row11+45],
         ];
-        this.makeGround(floorLocations);
+        this.makePlatforms(platformLocations);
 
         // make game floor to handle when player falls of screen
         let from = this.blockGrid.getFirstCellInRow(this.blockGrid.rows-3);
@@ -224,11 +224,11 @@ class SceneMain extends Phaser.Scene {
         Align.scaleToGameW(block, 1/9);
         block.setImmovable();
     }
-    makeGround(floorLocations){
-        this.brickGroup = this.physics.add.group();
-        floorLocations.forEach(floorBlock => {
-            for (var i = floorBlock[0]; i < floorBlock[1] + 1; i++) {
-                this.placeBlock(i, 'ground', this.brickGroup);
+    makePlatforms(platformLocations){
+        this.platformGroup = this.physics.add.group();
+        platformLocations.forEach(platformBlock => {
+            for (var i = platformBlock[0]; i < platformBlock[1] + 1; i++) {
+                this.placeBlock(i, 'ground', this.platformGroup);
             }
         });
     }
@@ -258,7 +258,7 @@ class SceneMain extends Phaser.Scene {
         this.player.data.set('gold', this.gold);
 
         // collisions
-        this.physics.add.collider(this.player, this.brickGroup, this.playerLanding, null, this);
+        this.physics.add.collider(this.player, this.platformGroup, this.playerLanding, null, this);
         this.physics.add.collider(this.player, this.gameFloor, this.gameOver, null, this);
     }
     makePlayerAnims(){
@@ -335,7 +335,7 @@ class SceneMain extends Phaser.Scene {
             child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.6));
             child.setGravityY(300);
         });
-        this.physics.add.collider(this.stars, this.brickGroup);
+        this.physics.add.collider(this.stars, this.platformGroup);
         this.physics.add.overlap(this.stars, this.player, this.collectStar, null, this);
     }
     collectStar(player, star){
