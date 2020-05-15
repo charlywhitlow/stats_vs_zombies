@@ -1,5 +1,5 @@
 // QuestionQueue Class
-// Adapted from: https://www.geeksforgeeks.org/implementation-queue-javascript/
+// Adapted from Queue class: https://www.geeksforgeeks.org/implementation-queue-javascript/
 class QuestionQueue 
 {
 	constructor(questions) {

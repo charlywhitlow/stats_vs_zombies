@@ -3,34 +3,23 @@ class UIBlock {
         //init private variables
         this._x = 0;
         this._y = 0;
-        //
-        //
         //keep track of this block's previous position
         this._oldX = 0;
         this._oldY = 0;
-        //
-        //
         this._visible = true;
-        //
-        //
         //needs to be set by developer
         this._displayWidth = 0;
         this._displayHeight = 0;
-        //
-        //
         //an array of the children
         this.children = [];
-        //current child count
-        //used for indexing
+        //current child count- used for indexing
         this.childIndex = -1;
-        //
         //used to identify this as a UIBlock to another UIBlock
         this.isPosBlock = true;
         this._depth = 1;
         this._alpha = 1;
     }
     set depth(val) {
-        //console.log(val);
         this._depth = val;
         if (this.children.length > 0) {
             this.setChildDepth(this.children[0]);
@@ -40,14 +29,12 @@ class UIBlock {
         return this._depth;
     }
     setChildDepth(child) {
-        //console.log(child);
         var realDepth = this._depth * 100 + child.childIndex;
         console.log(realDepth);
         if (child.scene == undefined) {
             child.scene = gw.model.currentScene;
         }
         child.depth = realDepth;
-        //  child.setDepth(realDepth);
         if (child.nextChild != null) {
             this.setChildDepth(child.nextChild);
         }
@@ -55,17 +42,14 @@ class UIBlock {
     set x(val) {
         //record the current x into oldX
         this._oldX = this._x;
-        //
         //update the value
         this._x = val;
-        //
         //update the children
         this.updatePositions();
     }
     set y(val) {
         //record the current y into oldY
         this._oldY = this._y;
-        //
         //update the value
         this._y = val;
         //update the children
@@ -89,19 +73,9 @@ class UIBlock {
         //build the linked list
         this.buildList();
     }
-   /* removeAvatar(userID) {
-        if (this.avatars[userID]) {
-            var avatar = this.avatars[userID];
-            if (avatar.prevAvatar) avatar.prevAvatar.nextAvatar = avatar.nextAvatar;
-            avatar.destroy();
-            delete this.avatars[userID];
-        }
-    }*/
     removeChild(child) {
         //take the child off the array based on index
         this.children.splice(child.childIndex, 1);
-
-        //
         //rebuild the linked list
         this.buildList();
         //rebuild the indexes
@@ -124,7 +98,6 @@ class UIBlock {
     }
     willRender()
     {
-
     }
     get displayWidth() {
         return this._displayWidth;
@@ -153,10 +126,6 @@ class UIBlock {
     get visible() {
         return this._visible;
     }
-    //
-    //
-    //
-    //
     set alpha(val) {
         if (this._alpha != val) {
             this._alpha = val;
