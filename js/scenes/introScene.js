@@ -14,12 +14,12 @@ class IntroScene extends Phaser.Scene {
         // add page elements
         this.createTitleText();
         this.createIntroText(this.titleText, 30);
-        this.createLaunchButton(this.introText, 60);
+        this.createLaunchButton(this.introText, 80);
         this.createShareText(this.launchButton, 100);
         this.createShareQR(this.shareText, 20);
-        this.createShareURL(this.shareQR, 0);
-        this.createGithubText(this.shareURL, 50)
-        this.createGithubButton(this.githubText, 0);
+        this.createShareURL(this.shareQR, 20);
+        // this.createGithubText(this.shareURL, 50)
+        // this.createGithubButton(this.githubText, 0);
     }
     createTitleText(){
         this.titleText = this.make.text({
@@ -109,13 +109,14 @@ class IntroScene extends Phaser.Scene {
             x: 0,
             y: shareY,
             padding: { x: 10, y: 10 },
-            text: 'users.cs.cf.ac.uk/WhitlowC/stats_vs_zombies',
+            text: 'users.cs.cf.ac.uk/WhitlowC/ stats_vs_zombies',
             style: {
                 fontSize: '64px',
                 fontFamily: 'Arial',
                 color: 'blue',
                 align: 'center',
-                fontStyle: 'bold'
+                fontStyle: 'bold',
+                wordWrap: { width: 1 }
             },
             add: true
         });
