@@ -12,9 +12,15 @@ window.onload = function() {
             height: window.innerHeight
         },
         autoCenter: Phaser.Scale.CENTER_BOTH,
+        dom: {
+            createContainer: true
+        },
         scene: [
             IntroScene, 
             TitleScene, 
+            MenuScene,
+            NewGameScene,
+            // LoadGameScene, // not yet implemented
             SceneMain, 
             PauseScene,
             QuizScene,

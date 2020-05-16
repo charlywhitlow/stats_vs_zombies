@@ -44,7 +44,8 @@ class TitleScene extends Phaser.Scene {
     }
 
     startGame(){
-        this.scene.start("SceneMain", "data from title scene");
-        this.titleMusic.pause();
+        // this.scene.start("SceneMain", "data from title scene");
+        this.scene.start("MenuScene");
+        this.titleMusic.stop();
     }
 }
