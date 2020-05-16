@@ -1,9 +1,5 @@
 var game;
 window.onload = function() {
-    var isMobile = navigator.userAgent.indexOf("Mobile");
-    if (isMobile == -1) {
-        isMobile = navigator.userAgent.indexOf("Tablet");
-    }
 
     // game config
     var config = {
@@ -33,6 +29,10 @@ window.onload = function() {
     };
 
     // launch game (mobile only)
+    var isMobile = navigator.userAgent.indexOf("Mobile");
+    if (isMobile == -1) {
+        isMobile = navigator.userAgent.indexOf("Tablet");
+    }
     if (isMobile != -1) {
         document.getElementById("webView").style.display = "none";
         game = new Phaser.Game(config);
