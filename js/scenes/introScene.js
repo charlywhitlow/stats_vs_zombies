@@ -168,10 +168,10 @@ class IntroScene extends Phaser.Scene {
         });
     }
     launchGame(){
-        // enter fullscreen
-        if (!this.scale.isFullscreen){
-            this.scale.startFullscreen();            
-        }
+        // // enter fullscreen
+        // if (!this.scale.isFullscreen){
+        //     this.scale.startFullscreen();            
+        // }
         // launch title scene
         this.scene.start("TitleScene");
     }
