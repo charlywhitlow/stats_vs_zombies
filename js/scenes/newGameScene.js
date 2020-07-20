@@ -10,6 +10,7 @@ class NewGameScene extends Phaser.Scene {
         // add title background
         this.bg = this.add.image(0, 0, 'menuBackground').setOrigin(0,0);
         Align.scaleToGameW(this.bg, 1);
+        Align.stretchToGameH(this.bg, 1);
 
         // create box grid
         this.grid = new AlignGrid({

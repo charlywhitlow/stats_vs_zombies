@@ -14,6 +14,7 @@ class TitleScene extends Phaser.Scene {
         // add title background
         this.bg = this.add.image(0, 0, 'titleBackground').setOrigin(0,0);
         Align.scaleToGameW(this.bg, 1);
+        Align.stretchToGameH(this.bg, 1);
 
         // set up align grid for visible screen
         this.aGrid = new AlignGrid({
