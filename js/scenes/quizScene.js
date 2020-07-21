@@ -232,7 +232,8 @@ class QuizScene extends Phaser.Scene {
     correctAnswer(){
         console.log('correct answer');
         
-        // return to scene after delay
+        // increment score and return to scene after delay
+        this.returnScene.scene.user.score ++;
         this.time.delayedCall(600, this.returnToScene.bind(this), [], this);
     }
     wrongAnswer(){

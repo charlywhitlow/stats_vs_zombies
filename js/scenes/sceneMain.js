@@ -3,20 +3,27 @@ class SceneMain extends Phaser.Scene {
         super('SceneMain');
     }
     init(data){
-        // set user data
-        if (data.username) {
-            this.username = data.username;
-            this.level = data.level;
-            this.gold = data.gold;
-            this.score = data.score;    
-        }else{
-            // for testing
-            this.username = 'cdog';
-            this.level = 1;
-            this.gold = 0;
-            this.score = 0;
+
+        // for testing
+        if (!data.username) {
+            console.log('testing data added');
+            data = {
+                "username" : "newPlayer",
+                "zone" : 1,
+                "level" : 1,
+                "gold" : 0,
+                "score" : 0
+            }                
         }
-        console.log("welcome "+this.username+"!\nlevel: "+this.level+"\nscore: "+this.score+"\nstarting gold: "+this.gold);
+
+        // set user data
+        if (!this.restarted) {
+            this.user = data;
+            this.initialData = Object.assign({}, this.user);
+        }else{
+            this.user = Object.assign({}, this.initialData);
+        }
+        console.log("welcome "+this.user.username+"!\nzone: "+this.user.zone+"\nlevel: "+this.user.level+"\nscore: "+this.user.score+"\nstarting gold: "+this.user.gold);
     }
     preload()
     {
@@ -29,6 +36,7 @@ class SceneMain extends Phaser.Scene {
         this.load.image('star', 'assets/sprites/star.png');
         this.load.spritesheet('coin', 'assets/sprites/coin.png', {frameWidth: (127/8), frameHeight: 16});
         this.load.image('bag', 'assets/sprites/bag.png');
+        this.load.image('invisible', 'assets/sprites/invisible.png');
 
         this.load.image("controlBack", "assets/backgrounds/metal.png");
         this.load.image("jumpButton", "assets/buttons/jump.bmp");
@@ -96,6 +104,10 @@ class SceneMain extends Phaser.Scene {
         let to = from + this.blockGrid.cols-1;
         this.makeGameFloor(from, to);
 
+        // make game end
+        this.gameEndX = 42; // temp hardcoded
+        this.makeGameEnd(this.gameEndX);
+
         // make player (index, gravity, bounce, velocity)
         this.makePlayer(1, 800, 0.2, 300);
 
@@ -114,13 +126,13 @@ class SceneMain extends Phaser.Scene {
 
         // make coins
         var coinLocations = [
-            row9+5, 
+            row9+5, row9+6,
             row8+10, row7+11, row7+12, row7+13, row8+14, 
             row9+18, row9+19, row9+20, 
-            row6+24, row6+25, row5+26, row6+27, 
-            row9+30, row9+31, row9+32, 
+            row6+23, row6+24, row6+25, row5+26, row6+27,  
+            row9+29, row9+30, row9+31, row9+32, 
             row7+36, row6+37,
-            row6+42, row6+43,
+            row6+38, row6+39,
         ];
         this.makeCoins(this.blockGrid, coinLocations);
 
@@ -238,6 +250,12 @@ class SceneMain extends Phaser.Scene {
             this.placeBlock(i, 'ground', this.gameFloor);
         }
     }
+    makeGameEnd(xIndex){
+        this.gameEnd = this.physics.add.group();
+        for (let i = 0; i < this.blockGrid.rows; i++) {
+            this.placeBlock(i * 46 + xIndex, 'invisible', this.gameEnd);
+        }
+    }
     makePlayer(i, gravity=200, bounce=0.15, velocityX=200){
         // create player sprite
         this.player = this.physics.add.sprite(0, 0, 'ninja');
@@ -250,16 +268,10 @@ class SceneMain extends Phaser.Scene {
         this.player.velocityX = velocityX;
         this.makePlayerAnims();
 
-        // set player data
-        this.player.setDataEnabled();
-        this.player.data.set('username', this.username);
-        this.player.data.set('level', this.level);
-        this.player.data.set('score', this.score);
-        this.player.data.set('gold', this.gold);
-
         // collisions
         this.physics.add.collider(this.player, this.platformGroup, this.playerLanding, null, this);
         this.physics.add.collider(this.player, this.gameFloor, this.gameOver, null, this);
+        this.physics.add.collider(this.player, this.gameEnd, this.levelComplete, null, this);
     }
     makePlayerAnims(){
         this.anims.create({
@@ -323,25 +335,25 @@ class SceneMain extends Phaser.Scene {
             this.player.jumping = false;
         }
     }
-    makeStars(grid, starLocations){
-        this.stars = this.physics.add.group();
-        starLocations.forEach(i => {
-            let star = this.physics.add.sprite(0, 0, 'star');
-            this.stars.add(star);
-            grid.placeAtIndex(i, star);
-            Align.scaleToGameW(star, 1/15);    
-        });
-        this.stars.children.iterate(function (child){
-            child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.6));
-            child.setGravityY(300);
-        });
-        this.physics.add.collider(this.stars, this.platformGroup);
-        this.physics.add.overlap(this.stars, this.player, this.collectStar, null, this);
-    }
-    collectStar(player, star){
-        star.disableBody(true, true);
-        console.log("star collected!");
-    }
+    // makeStars(grid, starLocations){
+    //     this.stars = this.physics.add.group();
+    //     starLocations.forEach(i => {
+    //         let star = this.physics.add.sprite(0, 0, 'star');
+    //         this.stars.add(star);
+    //         grid.placeAtIndex(i, star);
+    //         Align.scaleToGameW(star, 1/15);    
+    //     });
+    //     this.stars.children.iterate(function (child){
+    //         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.6));
+    //         child.setGravityY(300);
+    //     });
+    //     this.physics.add.collider(this.stars, this.platformGroup);
+    //     this.physics.add.overlap(this.stars, this.player, this.collectStar, null, this);
+    // }
+    // collectStar(player, star){
+    //     star.disableBody(true, true);
+    //     console.log("star collected!");
+    // }
     makeCoins(grid, coinLocations){
 
         // make coins and add
@@ -366,8 +378,8 @@ class SceneMain extends Phaser.Scene {
     }
     collectCoin(player, coin){
         coin.disableBody(true, true);
-        this.player.data.list.gold += 1;
-        this.coinScoreText.setText(this.player.data.list.gold);
+        this.user.gold += 1;
+        this.coinScoreText.setText(this.user.gold);
     }
     makeCoinBag(){
         // add coin bag
@@ -381,7 +393,7 @@ class SceneMain extends Phaser.Scene {
             x: 0,
             y: 0,
             padding: { x: 1, y: 4 },
-            text: this.player.data.list.gold,
+            text: this.user.gold,
             style: {
                 fontSize: '18px',
                 fontFamily: 'Arial',
@@ -465,7 +477,49 @@ class SceneMain extends Phaser.Scene {
     }
     gameOver(){
         // pause and launch game over scene
+        this.restarted = true; // to indicate user should be reset to initial values
         this.scene.pause();
         this.scene.launch('GameOverScene', this.scene);
+    }
+    levelComplete(){
+        console.log('level complete!')
+        this.restarted = false; // to carry user values to next level
+
+        // remove game end and stop following character
+        this.gameEnd.children.entries.forEach(element => {
+            element.disableBody();
+        });
+        this.cameras.main.stopFollow();
+
+        // add level complete text
+        this.levelCompleteText = this.make.text({
+            x: 0,
+            y: 0,
+            padding: { x: 32, y: 16 },
+            text: 'Level Complete',
+            style: {
+                fontSize: '20px',
+                fontFamily: 'Arial',
+                color: 'red',
+                align: 'center',
+            },
+            add: true
+        });
+        Align.scaleToGameW(this.levelCompleteText, .8);
+        let endCell = (3*this.blockGrid.cols) + this.gameEndX - (this.aGrid.cols/2);
+        this.blockGrid.placeAtIndex(endCell, this.levelCompleteText);
+
+        // short wait then switch back to map scene
+        this.time.addEvent({ delay: 1500, callback: function(){
+
+            // fade out to black
+            this.cameras.main.fade(800, 0, 0, 0);
+            this.user.level ++;          
+
+            // launch map scene
+            this.cameras.main.on('camerafadeoutcomplete', function () {
+                this.scene.start('MapScene', this.user);
+            }, this);
+        }, callbackScope: this, loop: false });
     }
 }
