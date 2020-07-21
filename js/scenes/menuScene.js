@@ -88,15 +88,7 @@ class MenuScene extends Phaser.Scene {
         
     }
     newGame(){
-        // create new user and launch game
-        let user = {
-            "username" : "newPlayer",
-            "zone" : 1,
-            "level" : 1,
-            "gold" : 0,
-            "score" : 0
-        };
-        this.scene.start("MapScene", user);
+        this.scene.start("NewGameScene");
     }
     loadGame(){
         console.log('load game');

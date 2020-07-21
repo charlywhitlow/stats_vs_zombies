@@ -33,16 +33,16 @@ class NewGameScene extends Phaser.Scene {
         Align.centerH(titleText);
 
         // create user title
-        let menuTitleConfig = {
+        let nameTextConfig = {
             xIndex : 1,
-            yIndex : 8,
+            yIndex : 10.5,
             xWidth : 16,
             yWidth : 3,
             fontSize : '70px',
             color: 'white',
         };
-        let menuText = this.addText(this.grid, "Create user:", menuTitleConfig);
-        Align.centerH(menuText);
+        let nameText = this.addText(this.grid, "Enter a name:", nameTextConfig);
+        Align.centerH(nameText);
 
         // add html form
         this.form = this.add.dom(0, 0).createFromCache('createUserForm');
@@ -52,26 +52,27 @@ class NewGameScene extends Phaser.Scene {
         this.form.on('click', function (event) {
             if (event.target.name === 'createButton'){
                 let inputUsername = this.getChildByName('username').value.trim();
-                let inputPassword = this.getChildByName('password').value.trim();
-                // launch new game if username/password not blank
-                if (inputUsername !== '' && inputPassword !== ''){
+                // let inputPassword = this.getChildByName('password').value.trim();
+                // launch new game if username not blank
+                if (inputUsername !== ''){
                     this.scene.newGame(inputUsername);
                 }
                 else{
-                    window.alert('Please enter a username and password');
+                    window.alert('Please enter a username to continue');
                 }
             }
         });
     }
-    newGame(username){
+    launchNewGame(username){
         // create new player and launch game
-        let player = {
+        let user = {
             "username" : username,
+            "zone" : 1,
             "level" : 1,
             "gold" : 0,
             "score" : 0
         };
-        this.scene.start("SceneMain", player);
+        this.scene.start("MapScene", user);
     }
     addText(grid, text, config){
         // options: xIndex, yIndex, xWidth, yWidth, xPadding, yPadding

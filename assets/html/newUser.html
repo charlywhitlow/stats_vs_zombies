@@ -3,8 +3,8 @@
 <!-- CREATE NEW USER -->
 <div class="login">
     <input type="text" placeholder="Username" id="username" name="username">
-    <input type="password" placeholder="Password" id="password" name="password">
-    <input type="submit" value="Create" name="createButton">
+    <!-- <input type="password" placeholder="Password" id="password" name="password"> -->
+    <input type="submit" value="Go" name="createButton">
 </div>
 
 <script>
@@ -12,7 +12,7 @@
     // get username and password from form
     var data = {
       email: document.forms[0].elements[0].value,
-      password: document.forms[0].elements[1].value
+      // password: document.forms[0].elements[1].value
     };
     // post to login endpoint
     $.ajax({
