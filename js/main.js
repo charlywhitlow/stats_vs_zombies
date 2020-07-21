@@ -21,6 +21,7 @@ window.onload = function() {
             MenuScene,
             NewGameScene,
             // LoadGameScene, // not yet implemented
+            MapScene,
             SceneMain, 
             PauseScene,
             QuizScene,

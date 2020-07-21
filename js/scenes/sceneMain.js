@@ -152,7 +152,7 @@ class SceneMain extends Phaser.Scene {
         // this.aGrid.showNumbers(); // for debugging
 
         // load questions for level
-        this.questions = this.cache.json.get('questions')["level"+this.level];
+        this.questions = this.cache.json.get('questions')["zone"+this.user.zone];
         this.questionQueue = new QuestionQueue(this.questions);
 
         // set listeners

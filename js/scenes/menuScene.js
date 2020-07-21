@@ -87,10 +87,16 @@ class MenuScene extends Phaser.Scene {
         leaderboardButton.setInteractive().on('pointerdown', this.leaderboard.bind(this));
         
     }
-    newGame(){        
-        // create new player
-        console.log('new game');
-        this.scene.start("NewGameScene");
+    newGame(){
+        // create new user and launch game
+        let user = {
+            "username" : "newPlayer",
+            "zone" : 1,
+            "level" : 1,
+            "gold" : 0,
+            "score" : 0
+        };
+        this.scene.start("MapScene", user);
     }
     loadGame(){
         console.log('load game');

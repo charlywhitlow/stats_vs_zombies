@@ -1,5 +1,5 @@
 {
-    "level1": {
+    "zone1": {
         "1" : {
             "type" : "textOnly",
             "text" : "____ is a measure of average variability around the mean, in squared units",
@@ -74,7 +74,7 @@
 
     },
 
-    "level2" : {
+    "zone2" : {
         "1" : {
 
         }
