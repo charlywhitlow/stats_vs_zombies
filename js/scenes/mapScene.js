@@ -198,7 +198,7 @@ class MapScene extends Phaser.Scene {
 
         // launch game on pressing anywhere on screen
         this.input.on('pointerdown', function(){
-            this.scene.start("SceneMain", this.user);
+            this.scene.start("MainGameScene", this.user);
         }, this);        
     }
     addText(grid, text, config){

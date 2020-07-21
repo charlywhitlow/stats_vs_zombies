@@ -22,7 +22,7 @@ window.onload = function() {
             NewGameScene,
             // LoadGameScene, // not yet implemented
             MapScene,
-            SceneMain, 
+            MainGameScene, 
             PauseScene,
             QuizScene,
             GameOverScene

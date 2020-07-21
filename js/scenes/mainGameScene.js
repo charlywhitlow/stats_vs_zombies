@@ -1,6 +1,6 @@
-class SceneMain extends Phaser.Scene {
+class MainGameScene extends Phaser.Scene {
     constructor() {
-        super('SceneMain');
+        super('MainGameScene');
     }
     init(data){
 
@@ -139,6 +139,9 @@ class SceneMain extends Phaser.Scene {
         // add coin bag
         this.makeCoinBag();
 
+        // add score panel
+        // this.makeScorePanel();
+
         // add pause button
         this.pauseButton = new PauseButton({
             scene: this,
@@ -166,6 +169,26 @@ class SceneMain extends Phaser.Scene {
         // load questions for level
         this.questions = this.cache.json.get('questions')["zone"+this.user.zone];
         this.questionQueue = new QuestionQueue(this.questions);
+        // this.questionQueue.printQueue();
+
+        // let playerReponses = {};
+        // this.questionKeys.forEach(key => {
+        //     // console.log(key);
+        //     playerReponses[key] = {
+        //         'shown' : 0,
+        //         'correct' : 0,
+        //         'wrong' : 0,
+        //         'order' : []
+        //     };
+        // });
+        // console.log(playerReponses);
+        // this.player.data.set('playerResponses', playerReponses);
+       
+        // console.log(this.events);
+        // this.events.on('transitionstart', function(fromScene, duration){ 
+        //     console.log('resumed from:');
+        //     console.log(fromScene);
+        // });
 
         // set listeners
         this.setListeners();

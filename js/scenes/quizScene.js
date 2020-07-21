@@ -11,7 +11,7 @@ class QuizScene extends Phaser.Scene {
             this.questionAnswers = data.question.answers;    
         }else{
             // testing- q1 text only
-            // this.returnScene = this.scene.get('SceneMain');
+            // this.returnScene = this.scene.get('MainGameScene');
             // this.questionText = '____ is a measure of average variability around the mean, in squared units';
             // this.questionType = 'textOnly';
             // this.questionImage = '';
@@ -35,7 +35,7 @@ class QuizScene extends Phaser.Scene {
             // };
 
             // testing- q3 text + image
-            this.returnScene = this.scene.get('SceneMain');
+            this.returnScene = this.scene.get('MainGameScene');
             this.questionText = 'This graph is a:';
             this.questionType = 'image';
             this.questionImage = 'assets/questionImages/Level1/3_boxplot.png';
