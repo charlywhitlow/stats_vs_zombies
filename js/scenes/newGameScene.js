@@ -55,7 +55,7 @@ class NewGameScene extends Phaser.Scene {
                 // let inputPassword = this.getChildByName('password').value.trim();
                 // launch new game if username not blank
                 if (inputUsername !== ''){
-                    this.scene.newGame(inputUsername);
+                    this.scene.launchNewGame(inputUsername);
                 }
                 else{
                     window.alert('Please enter a username to continue');
