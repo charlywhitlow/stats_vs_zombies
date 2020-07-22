@@ -24,59 +24,59 @@ class MapScene extends Phaser.Scene {
             "levels" : {
                 "1" : {
                     "x" : 3,
-                    "y" : 21
+                    "y" : 22
                 },
                 "2" : {
                     "x" : 7,
-                    "y" : 21
+                    "y" : 22
                 },
                 "3" : {
                     "x" : 11,
-                    "y" : 21
+                    "y" : 22
                 },
                 "4" : {
                     "x" : 11,
-                    "y" : 17
+                    "y" : 18
                 },
                 "5" : {
                     "x" : 7,
-                    "y" : 17
+                    "y" : 18
                 },
                 "6" : {
                     "x" : 3,
-                    "y" : 15
+                    "y" : 16
                 },
                 "7" : {
                     "x" : 5,
-                    "y" : 13
+                    "y" : 14
                 },
                 "8" : {
                     "x" : 9,
-                    "y" : 13
+                    "y" : 14
                 },
                 "9" : {
                     "x" : 11,
-                    "y" : 9
+                    "y" : 10
                 },
                 "10" : {
                     "x" : 5,
-                    "y" : 9
+                    "y" : 10
                 },
             },
             "pipes" : [
-                {"x":5, "y":21, "image":"pipeHorizontal"},
-                {"x":9, "y":21, "image":"pipeHorizontal"},
-                {"x":11, "y":19, "image":"pipeVertical"},
-                {"x":9, "y":17, "image":"pipeHorizontal"},
-                {"x":5, "y":17, "image":"pipeHorizontal"},
-                {"x":3, "y":17, "image":"pipeTopRight"},   
-                {"x":3, "y":13, "image":"pipeBottomRight"},   
-                {"x":7, "y":13, "image":"pipeHorizontal"},
-                {"x":3, "y":13, "image":"pipeBottomRight"},   
-                {"x":11, "y":13, "image":"pipeTopLeft"},   
-                {"x":11, "y":11, "image":"pipeVertical"},
-                {"x":9, "y":9, "image":"pipeHorizontal"},
-                {"x":7, "y":9, "image":"pipeHorizontal"},
+                {"x":5, "y":22, "image":"pipeHorizontal"},
+                {"x":9, "y":22, "image":"pipeHorizontal"},
+                {"x":11, "y":20, "image":"pipeVertical"},
+                {"x":9, "y":18, "image":"pipeHorizontal"},
+                {"x":5, "y":18, "image":"pipeHorizontal"},
+                {"x":3, "y":18, "image":"pipeTopRight"},   
+                {"x":3, "y":14, "image":"pipeBottomRight"},   
+                {"x":7, "y":14, "image":"pipeHorizontal"},
+                {"x":3, "y":14, "image":"pipeBottomRight"},   
+                {"x":11, "y":14, "image":"pipeTopLeft"},   
+                {"x":11, "y":12, "image":"pipeVertical"},
+                {"x":9, "y":10, "image":"pipeHorizontal"},
+                {"x":7, "y":10, "image":"pipeHorizontal"},
             ]
         }
     }
@@ -104,55 +104,71 @@ class MapScene extends Phaser.Scene {
             cols: 18,
         });
 
-        // fade in
-        this.cameras.main.fadeFrom(500, 0, 0, 0);
-
         // add map panel
         this.mapPanel = this.add.image(0, 0, 'mapPanel').setOrigin(0,0);
-        Align.scaleToGameW(this.mapPanel, 0.95);
-        this.grid.placeAtIndex(100, this.mapPanel);
+        Align.scaleToGameW(this.mapPanel, 0.9);
+        this.grid.placeAtIndex(135, this.mapPanel);
         Align.centerH(this.mapPanel);
-        Align.stretchToGameH(this.mapPanel, 0.65);
+        Align.stretchToGameH(this.mapPanel, 0.62);
+        this.mapPanel.setInteractive().on('pointerup', function () {
+            this.scene.start("MainGameScene", this.user);
+        }, this);
 
         // build map
         this.buildMap(this.mapJSON);
 
         // add zone text
-        let zoneTextConfig = {
+        let zoneText = this.addText(this.grid, "Zone "+this.user.zone, {
             xIndex : 1,
-            yIndex : 1,
+            yIndex : 3,
             xWidth : 16,
             yWidth : 3,
             fontSize : '80px',
             fontStyle : 'bold',
             color: 'red',
-        };
-        let zoneText = this.addText(this.grid, "Zone "+this.user.zone, zoneTextConfig);
+        });
         Align.centerH(zoneText);
 
-        // add leve text
-        let levelTextConfig = {
+        // add level text
+        let levelText = this.addText(this.grid, "Level "+this.user.level, {
             xIndex : 1,
-            yIndex : 3,
+            yIndex : 5,
             xWidth : 16,
             yWidth : 3,
             fontSize : '70px',
             color: 'red',
-        };
-        let levelText = this.addText(this.grid, "Level "+this.user.level, levelTextConfig);
+        });
         Align.centerH(levelText);
 
-        // any key to start text
-        let startTextConfig = {
+        // tap map to start text
+        let startText = this.addText(this.grid, "Tap map to start", {
             xIndex : 1,
-            yIndex : 27,
+            yIndex : 28,
             xWidth : 16,
             yWidth : 3,
             fontSize : '70px',
-            color: 'red',
-        };
-        let startText = this.addText(this.grid, "Tap anywhere to start", startTextConfig);
+            color: 'red',            
+        });
         Align.centerH(startText);
+
+        // add back button
+        let backButton = this.addText(this.grid, "< Back", {
+            xIndex : 13,
+            yIndex : 1,
+            xWidth : 4,
+            yWidth : 1.8,
+            fontSize : '42px',
+            color: 'white',
+            backgroundColor: 'grey',
+        });
+        backButton.setInteractive().on('pointerup', function () {
+            console.log('back to menu')
+            this.scene.start("MenuScene");
+        }, this);
+
+        // fade in
+        this.cameras.main.fadeFrom(500, 0, 0, 0);
+
     }
     buildMap(mapJSON){
         for (const i in mapJSON.levels) {
@@ -195,11 +211,6 @@ class MapScene extends Phaser.Scene {
             Align.scaleToGameW(pipe, 0.11);
             this.grid.placeAt(i['x'], i['y'], pipe);
         });
-
-        // launch game on pressing anywhere on screen
-        this.input.on('pointerdown', function(){
-            this.scene.start("MainGameScene", this.user);
-        }, this);        
     }
     addText(grid, text, config){
         // options: xIndex, yIndex, xWidth, yWidth, xPadding, yPadding
