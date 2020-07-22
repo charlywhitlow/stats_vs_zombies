@@ -20,33 +20,31 @@ class NewGameScene extends Phaser.Scene {
         });
 
         // add stats vs zombie title
-        let titleConfig = {
+        let titleText = this.addText(this.grid, "Stats Vs Zombies", {
             xIndex : 1,
-            yIndex : 4,
+            yIndex : 8,
             xWidth : 16,
             yWidth : 3,
-            fontSize : '90px',
+            fontSize : '80px',
             fontStyle : 'bold',
             color: 'white',
-        };
-        let titleText = this.addText(this.grid, "Stats Vs Zombies", titleConfig);
+        });
         Align.centerH(titleText);
 
         // create user title
-        let nameTextConfig = {
+        let nameText = this.addText(this.grid, "Enter a name:", {
             xIndex : 1,
-            yIndex : 10.5,
+            yIndex : 12,
             xWidth : 16,
             yWidth : 3,
             fontSize : '70px',
             color: 'white',
-        };
-        let nameText = this.addText(this.grid, "Enter a name:", nameTextConfig);
+        });
         Align.centerH(nameText);
 
         // add html form
         this.form = this.add.dom(0, 0).createFromCache('createUserForm');
-        this.grid.placeAtIndex(320, this.form);
+        this.grid.placeAtIndex(340, this.form);
         Align.centerH(this.form);
         this.form.addListener('click');
         this.form.on('click', function (event) {
@@ -62,6 +60,24 @@ class NewGameScene extends Phaser.Scene {
                 }
             }
         });
+
+        // add back button
+        let backButton = this.addText(this.grid, "< Back", {
+            xIndex : 13,
+            yIndex : 1,
+            xWidth : 4,
+            yWidth : 1.8,
+            fontSize : '42px',
+            color: 'white',
+            backgroundColor: 'grey',
+        });
+        backButton.setInteractive().on('pointerup', function () {
+            console.log('back to menu')
+            this.scene.start("MenuScene");
+        }, this);
+
+        // fade in
+        this.cameras.main.fadeFrom(100, 0, 0, 0);
     }
     launchNewGame(username){
         // create new player and launch game
