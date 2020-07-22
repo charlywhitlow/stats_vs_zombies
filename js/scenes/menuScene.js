@@ -31,25 +31,16 @@ class MenuScene extends Phaser.Scene {
         let titleText = this.addText(this.grid, "Stats Vs Zombies", titleConfig);
         Align.centerH(titleText);
 
-        // add menu title
-        let menuTitleConfig = {
-            xIndex : 1,
-            yIndex : 10,
-            xWidth : 10,
-            yWidth : 3,
-            fontSize : '80px',
-            color: 'white',
-        };
-        let menuText = this.addText(this.grid, "Menu", menuTitleConfig);
-        Align.centerH(menuText);
-
         // add buttons
         this.addButtons();
+
+        // fade in
+        this.cameras.main.fadeFrom(100, 0, 0, 0);
     }
     addButtons(){
         let newGameConfig = {
             xIndex : 1,
-            yIndex : 14,
+            yIndex : 11,
             xWidth : 10,
             yWidth : 2.5,
             backgroundColor: 'lightgrey',
@@ -62,7 +53,7 @@ class MenuScene extends Phaser.Scene {
 
         let loadGameConfig = {
             xIndex : 1,
-            yIndex : 18,
+            yIndex : 15,
             xWidth : 10,
             yWidth : 2.5,
             backgroundColor: 'lightgrey',
@@ -75,7 +66,7 @@ class MenuScene extends Phaser.Scene {
 
         let leaderboardConfig = {
             xIndex : 1,
-            yIndex : 22,
+            yIndex : 19,
             xWidth : 10,
             yWidth : 2.5,
             backgroundColor: 'lightgrey',
@@ -85,16 +76,33 @@ class MenuScene extends Phaser.Scene {
         let leaderboardButton = this.addText(this.grid, "Leaderboard", leaderboardConfig);
         Align.centerH(leaderboardButton);
         leaderboardButton.setInteractive().on('pointerdown', this.leaderboard.bind(this));
-        
+
+        let aboutConfig = {
+            xIndex : 1,
+            yIndex : 23,
+            xWidth : 10,
+            yWidth : 2.5,
+            backgroundColor: 'lightgrey',
+            fontSize : '70px',
+            color: 'black',
+        };
+        let aboutButton = this.addText(this.grid, "About", aboutConfig);
+        Align.centerH(aboutButton);
+        aboutButton.setInteractive().on('pointerdown', this.about.bind(this));
     }
     newGame(){
         this.scene.start("NewGameScene");
     }
     loadGame(){
         console.log('load game');
+        // load player from database and pass to map scene:
+        // this.scene.start("MapScene", user);
     }
     leaderboard(){
         console.log('leaderboard');
+    }
+    about(){
+        this.scene.start("AboutScene");
     }
     addText(grid, text, config){
         // options: xIndex, yIndex, xWidth, yWidth, xPadding, yPadding

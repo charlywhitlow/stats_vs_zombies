@@ -19,6 +19,7 @@ window.onload = function() {
             IntroScene, 
             TitleScene, 
             MenuScene,
+            AboutScene,
             NewGameScene,
             // LoadGameScene, // not yet implemented
             MapScene,
