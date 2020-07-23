@@ -276,7 +276,7 @@ class MainGameScene extends Phaser.Scene {
     makeGameEnd(xIndex){
         this.gameEnd = this.physics.add.group();
         for (let i = 0; i < this.blockGrid.rows; i++) {
-            this.placeBlock(i * 46 + xIndex, 'invisible', this.gameEnd);
+            this.placeBlock(i * this.blockGrid.cols + xIndex, 'invisible', this.gameEnd);
         }
     }
     makePlayer(i, gravity=200, bounce=0.15, velocityX=200){
