@@ -123,6 +123,7 @@ class MainGameScene extends Phaser.Scene {
         // var starLocations = [5, 10, 11, 12, 13, 18, 19, 20, 30, 32, 36, 42];
         // var starLocations = [55];
         // this.makeStars(this.blockGrid, starLocations);
+        this.createStarsGroup();
 
         // make coins
         var coinLocations = [
@@ -245,8 +246,37 @@ class MainGameScene extends Phaser.Scene {
             this.player.jump = 0;
         }
     }
+    createStarsGroup(){
+        this.stars = this.physics.add.group();
+        this.physics.add.overlap(this.stars, this.zombies, this.killZombie, null, this.zombies);
+    }
     shoot(){
-        console.log('shoot');
+        // shoot star
+        let star = this.physics.add.sprite(0, 0, 'star');
+        this.stars.add(star);
+        Align.scaleToGameW(star, 1/15);
+        star.x = this.player.x + 10;
+        star.y = this.player.y;
+        star.setVelocityX(800);
+        star.setGravityY(50);
+
+        // destroy star after delay
+        this.time.addEvent({ delay: 900, callback: function(){
+            star.destroy();
+        }, callbackScope: this, loop: false });
+
+    }
+    killZombie(star, zombie){
+        // remove star and set zombie falling off screen
+        star.destroy();
+        zombie.rotation = 0.6;
+        zombie.active = false;
+        zombie.setVelocityY(300);
+
+        // destroy zombie after delay
+        this.scene.time.addEvent({ delay: 1000, callback: function(){
+            zombie.destroy();
+        }, callbackScope: this, loop: false });
     }
     pause(){
         this.scene.pause();
@@ -486,8 +516,8 @@ class MainGameScene extends Phaser.Scene {
     }
     zombieCollisionQuizScene(player, zombie){
 
-        // handle collision once
-        if (zombie.collided == false) {
+        // handle collision once, if zombie hasn't been shot
+        if (zombie.collided == false && zombie.active == true) {
             zombie.collided = true;
 
             // get next question
