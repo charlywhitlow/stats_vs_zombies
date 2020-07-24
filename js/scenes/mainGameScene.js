@@ -294,7 +294,7 @@ class MainGameScene extends Phaser.Scene {
         // collisions
         this.physics.add.collider(this.player, this.platformGroup, this.playerLanding, null, this);
         this.physics.add.collider(this.player, this.gameFloor, this.gameOver, null, this);
-        this.physics.add.collider(this.player, this.gameEnd, this.levelComplete, null, this);
+        this.physics.add.overlap(this.player, this.gameEnd, this.levelComplete, null, this);
     }
     makePlayerAnims(){
         this.anims.create({
