@@ -3,8 +3,7 @@ class MainGameScene extends Phaser.Scene {
         super('MainGameScene');
     }
     init(data){
-
-        // for testing
+        // add data if not set (for testing)
         if (!data.username) {
             console.log('testing data added');
             data = {
@@ -15,7 +14,6 @@ class MainGameScene extends Phaser.Scene {
                 "score" : 0
             }                
         }
-
         // set user data
         if (!this.restarted) {
             this.user = data;
@@ -29,7 +27,7 @@ class MainGameScene extends Phaser.Scene {
     {
         this.load.image('background', 'assets/backgrounds/pixelCity_padded.png');
         this.load.image('ground', 'assets/tiles/brickGrey.png');
-        this.load.json('questions', 'assets/data/questions.json');
+        this.load.json('zone', 'assets/data/zone'+this.user.zone+'.json');
 
         this.load.multiatlas('zombie', 'assets/sprites/ZombieWalk.json', 'assets/sprites');
         this.load.multiatlas('ninja', 'assets/sprites/NinjaGirl.json', 'assets/sprites');
@@ -68,35 +66,9 @@ class MainGameScene extends Phaser.Scene {
             height: this.bg.displayHeight,
             width: this.bg.displayWidth
         });
-        
-        // row start indexes
-        let row5 = this.blockGrid.getFirstCellInRow(5);
-        let row6 = this.blockGrid.getFirstCellInRow(6);
-        let row7 = this.blockGrid.getFirstCellInRow(7);
-        let row8 = this.blockGrid.getFirstCellInRow(8);
-        let row9 = this.blockGrid.getFirstCellInRow(9);
-        let row10 = this.blockGrid.getFirstCellInRow(10);
-        let row11 = this.blockGrid.getFirstCellInRow(11);
-
-        // make platforms (nb- need gap of min 2 blocks to fall through. row = 46 blocks)
-        let platformLocations = [
-            [row10, row10+6],
-            [row11, row11+6],
-
-            [row10+10, row10+14],
-            [row11+10, row11+14],
-
-            [row10+17, row10+21],
-            [row11+17, row11+21],
-
-            [row8+23, row8+25],
-
-            [row10+28, row10+35],
-            [row11+28, row11+35],
-
-            [row10+38, row10+45],
-            [row11+38, row11+45],
-        ];
+       
+        // make platforms
+        let platformLocations = this.cache.json.get('zone')["levels"][this.user.level]['platforms'];
         this.makePlatforms(platformLocations);
 
         // make game floor to handle when player falls of screen
@@ -105,18 +77,14 @@ class MainGameScene extends Phaser.Scene {
         this.makeGameFloor(from, to);
 
         // make game end
-        this.gameEndX = 42; // temp hardcoded
+        this.gameEndX = this.cache.json.get('zone')["levels"][this.user.level]['gameEnd'];
         this.makeGameEnd(this.gameEndX);
 
         // make player (index, gravity, bounce, velocity)
         this.makePlayer(1, 800, 0.2, 300);
 
         // make zombies
-        let zombieLocations = [
-            row9+12,
-            row9+33,
-            row9+38
-        ];
+        let zombieLocations = this.cache.json.get('zone')["levels"][this.user.level]['zombies'];
         this.makeZombies(this.blockGrid, zombieLocations);
 
         // add stars
@@ -126,15 +94,7 @@ class MainGameScene extends Phaser.Scene {
         this.createStarsGroup();
 
         // make coins
-        var coinLocations = [
-            row9+5, row9+6,
-            row8+10, row7+11, row7+12, row7+13, row8+14, 
-            row9+18, row9+19, row9+20, 
-            row6+23, row6+24, row6+25, row5+26, row6+27,  
-            row9+29, row9+30, row9+31, row9+32, 
-            row7+36, row6+37,
-            row6+38, row6+39,
-        ];
+        let coinLocations = this.cache.json.get('zone')["levels"][this.user.level]['coins'];
         this.makeCoins(this.blockGrid, coinLocations);
 
         // add coin bag
@@ -168,7 +128,7 @@ class MainGameScene extends Phaser.Scene {
         // this.aGrid.showNumbers(); // for debugging
 
         // load questions for level
-        this.questions = this.cache.json.get('questions')["zone"+this.user.zone];
+        this.questions = this.cache.json.get('zone')["questionDeck"];
         this.questionQueue = new QuestionQueue(this.questions);
         // this.questionQueue.printQueue();
 
@@ -292,7 +252,9 @@ class MainGameScene extends Phaser.Scene {
     makePlatforms(platformLocations){
         this.platformGroup = this.physics.add.group();
         platformLocations.forEach(platformBlock => {
-            for (var i = platformBlock[0]; i < platformBlock[1] + 1; i++) {
+            let from = this.blockGrid.getFirstCellInRow(platformBlock.from.row) + platformBlock.from.col;
+            let to = this.blockGrid.getFirstCellInRow(platformBlock.to.row) + platformBlock.to.col;
+            for (var i = from; i < to + 1; i++) {
                 this.placeBlock(i, 'ground', this.platformGroup);
             }
         });
@@ -300,7 +262,7 @@ class MainGameScene extends Phaser.Scene {
     makeGameFloor(from, to){
         this.gameFloor = this.physics.add.group();
         for (var i = from; i < to + 1; i++) {
-            this.placeBlock(i, 'ground', this.gameFloor);
+            this.placeBlock(i, 'invisible', this.gameFloor);
         }
     }
     makeGameEnd(xIndex){
@@ -408,10 +370,10 @@ class MainGameScene extends Phaser.Scene {
     //     console.log("star collected!");
     // }
     makeCoins(grid, coinLocations){
-
         // make coins and add
         this.coins = this.physics.add.group();
-        coinLocations.forEach(i => {
+        coinLocations.forEach(coinLocation => {
+            let i = this.blockGrid.getFirstCellInRow(coinLocation.row) + coinLocation.col;
             let coin = this.physics.add.sprite(0, 0, 'coin');
             this.coins.add(coin);
             Align.scaleToGameW(coin, 1/14);
@@ -461,10 +423,10 @@ class MainGameScene extends Phaser.Scene {
         this.aGrid.placeAtIndex(7, this.coinScoreText);        
     }
     makeZombies(grid, zombieLocations){
-
         // add zombies group and add zombie at each location 
         this.zombies = this.physics.add.group();
-        zombieLocations.forEach(i => {
+        zombieLocations.forEach(zombieLocation => {
+            let i = this.blockGrid.getFirstCellInRow(zombieLocation.row) + zombieLocation.col;
             let zombie = this.physics.add.sprite(0, 0, 'zombie').setOrigin(0.55);
             zombie.body.setSize(zombie.width-200, zombie.height-200, true); // shrink bounding box
             zombie.collided = false;            
