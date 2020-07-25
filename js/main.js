@@ -5,7 +5,7 @@ window.onload = function() {
     var config = {
         type: Phaser.AUTO,
         scale: {
-            mode: Phaser.Scale.FIT,
+            mode: Phaser.Scale.RESIZE,
             parent: 'phaser-game',
             autoCenter: Phaser.Scale.CENTER_BOTH,
             width: window.innerWidth,

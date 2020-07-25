@@ -19,22 +19,10 @@ class NewGameScene extends Phaser.Scene {
             cols: 18,
         });
 
-        // add stats vs zombie title
-        let titleText = this.addText(this.grid, "Stats Vs Zombies", {
-            xIndex : 1,
-            yIndex : 8,
-            xWidth : 16,
-            yWidth : 3,
-            fontSize : '80px',
-            fontStyle : 'bold',
-            color: 'white',
-        });
-        Align.centerH(titleText);
-
         // create user title
         let nameText = this.addText(this.grid, "Enter a name:", {
             xIndex : 1,
-            yIndex : 12,
+            yIndex : 8,
             xWidth : 16,
             yWidth : 3,
             fontSize : '70px',
@@ -44,7 +32,8 @@ class NewGameScene extends Phaser.Scene {
 
         // add html form
         this.form = this.add.dom(0, 0).createFromCache('createUserForm');
-        this.grid.placeAtIndex(340, this.form);
+        let index = this.grid.getFirstCellInRow(14);
+        this.grid.placeAtIndex(index, this.form);
         Align.centerH(this.form);
         this.form.addListener('click');
         this.form.on('click', function (event) {
