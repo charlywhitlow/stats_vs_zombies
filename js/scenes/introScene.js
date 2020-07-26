@@ -48,8 +48,8 @@ class IntroScene extends Phaser.Scene {
         this.launchButton = this.createButton(this.chromeText, 20, 0.6, 'Play the game',
             {
                 paddingX : 25,
-                paddingY : 25,
-                fontSize : '64px',
+                paddingY : 20,
+                fontSize : '60px',
                 fontFamily : 'Arial',
                 color : 'white',
                 align : 'center',
@@ -60,10 +60,10 @@ class IntroScene extends Phaser.Scene {
             this.launchGame();
         }, this);
 
-        this.shareText = this.createTextBelow(this.launchButton, 20, .6,
+        this.shareText = this.createTextBelow(this.launchButton, 40, .55,
             'Share with your friends:', {
                 paddingX : 10,
-                paddingY : 10,
+                paddingY : 5,
                 fontSize : '20px',
                 fontFamily : 'Arial',
                 color : 'black',
@@ -72,12 +72,12 @@ class IntroScene extends Phaser.Scene {
             }
         );
 
-        this.qrImage = this.createImage(this.shareText, 0, 'QR', 0.4);
+        this.qrImage = this.createImage(this.shareText, 0, 'QR', 0.35);
 
-        this.shareURL = this.createTextBelow(this.qrImage, 10, .8,
+        this.shareURL = this.createTextBelow(this.qrImage, 0, .75,
             'users.cs.cf.ac.uk/WhitlowC/ stats_vs_zombies', {
                 paddingX : 10,
-                paddingY : 10,
+                paddingY : 5,
                 fontSize : '20px',
                 fontFamily : 'Arial',
                 color : 'red',
@@ -90,7 +90,7 @@ class IntroScene extends Phaser.Scene {
             window.open('https://users.cs.cf.ac.uk/WhitlowC/stats_vs_zombies/', '_blank');
         });
 
-        this.githubText = this.createTextBelow(this.shareURL, 10, .5,
+        this.githubText = this.createTextBelow(this.shareURL, 20, .5,
             'Source code available at:', {
                 paddingX : 10,
                 paddingY : 10,
