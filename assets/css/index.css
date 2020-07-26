@@ -3,6 +3,9 @@ body{
     padding: 0;
     margin: 0;
 }
+h1 {
+    font-size: 3em;
+}
 #webView{
     font-family: Arial, Helvetica, sans-serif;
     padding: 1em;
@@ -15,29 +18,21 @@ body{
     -moz-transform: translateY(10%);
     -ms-transform: translateY(10%);
 }
-p {
-    font-size: 1.2em;
+#webView p {
+    font-size: 1.4em;
 }
-a, a:visited {
-    color: rgb(85, 3, 153);
+.warning {
+    font-weight: bold; 
+    font-size: 5em;
 }
-#qrCode a {
-    font-size: 1.2em;
+a, a:visited, .warning {
+    color: #d60007;
 }
-#qrCode p{
-    padding: 0;
-    margin: 0;
+#qrCode {
+    height: 200px;
 }
-#gitBox{
-    padding-top: 3em;
-}
-#gitBox p{
-    padding: 0.2em;
-    margin: 0;
-}
-#gitBox a{
-    padding: 0.2em;
-    margin: 0;
+a{
+    text-decoration: none;
 }
 
 /* login */
