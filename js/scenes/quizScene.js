@@ -8,7 +8,8 @@ class QuizScene extends Phaser.Scene {
             this.questionText = data.question.text;
             this.questionType = data.question.type;
             this.questionImage = data.question.imageFile;
-            this.questionAnswers = data.question.answers;    
+            this.questionAnswers = data.question.answers;
+            this.zombie = data.zombie;
         }else{
             // testing- q1 text only
             // this.returnScene = this.scene.get('MainGameScene');
@@ -232,8 +233,15 @@ class QuizScene extends Phaser.Scene {
     correctAnswer(){
         console.log('correct answer');
         
-        // increment score and return to scene after delay
+        // increment score and set zombie falling off screen
         this.returnScene.scene.user.score ++;
+        this.returnScene.scene.zombieScoreText.setText(this.returnScene.scene.user.score);
+
+        this.zombie.rotation = 0.6;
+        this.zombie.active = false;
+        this.zombie.setVelocityY(300);
+
+        // return to scene after short delay
         this.time.delayedCall(600, this.returnToScene.bind(this), [], this);
     }
     wrongAnswer(){

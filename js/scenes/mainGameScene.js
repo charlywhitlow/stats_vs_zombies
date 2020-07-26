@@ -32,6 +32,7 @@ class MainGameScene extends Phaser.Scene {
         this.load.multiatlas('zombie', 'assets/sprites/ZombieWalk.json', 'assets/sprites');
         this.load.multiatlas('ninja', 'assets/sprites/NinjaGirl.json', 'assets/sprites');
         this.load.image('star', 'assets/sprites/star.png');
+        this.load.image('deadZombie', 'assets/sprites/DeadZombie.png');
         this.load.spritesheet('coin', 'assets/sprites/coin.png', {frameWidth: (127/8), frameHeight: 16});
         this.load.image('bag', 'assets/sprites/bag.png');
         this.load.image('invisible', 'assets/sprites/invisible.png');
@@ -40,6 +41,7 @@ class MainGameScene extends Phaser.Scene {
         this.load.image("jumpButton", "assets/buttons/jump.bmp");
         this.load.image("shootButton", "assets/buttons/shoot.bmp");
         this.load.image("pause", "assets/buttons/pause_icon.png");
+        this.load.image("back", 'assets/buttons/back.png');
         this.load.image("play", "assets/buttons/play_icon.png");
     }
     create()
@@ -97,11 +99,14 @@ class MainGameScene extends Phaser.Scene {
         let coinLocations = this.cache.json.get('zone')["levels"][this.user.level]['coins'];
         this.makeCoins(this.blockGrid, coinLocations);
 
-        // add coin bag
-        this.makeCoinBag();
-
         // add score panel
-        // this.makeScorePanel();
+        this.makeScorePanel(3.5);
+
+        // add coin bag
+        this.makeCoinBag(5.5);
+
+        // add back button
+        this.makeBackButton(7.5);
 
         // add pause button
         this.pauseButton = new PauseButton({
@@ -232,6 +237,10 @@ class MainGameScene extends Phaser.Scene {
         zombie.rotation = 0.6;
         zombie.active = false;
         zombie.setVelocityY(300);
+
+        // increment score
+        this.scene.user.score ++;
+        this.scene.zombieScoreText.setText(this.scene.user.score);
 
         // destroy zombie after delay
         this.scene.time.addEvent({ delay: 1000, callback: function(){
@@ -396,11 +405,11 @@ class MainGameScene extends Phaser.Scene {
         this.user.gold += 1;
         this.coinScoreText.setText(this.user.gold);
     }
-    makeCoinBag(){
+    makeCoinBag(index){
         // add coin bag
         this.bag = this.add.image(0, 0, "bag").setOrigin(0.4, 0);
         Align.scaleToGameH(this.bag, 1/20);
-        this.aGrid.placeAtIndex(6.5, this.bag);
+        this.aGrid.placeAtIndex(index-0.5, this.bag);
         this.bag.setScrollFactor(0);
 
         // update coin score
@@ -418,9 +427,47 @@ class MainGameScene extends Phaser.Scene {
             add: true
         });
         this.coinScoreText.setScrollFactor(0);
-        Align.scaleToGameW(this.coinScoreText, 1/22);
+        Align.scaleToGameH(this.coinScoreText, 1/20);
         this.coinScoreText.setOrigin(-0.5, 0);
-        this.aGrid.placeAtIndex(7, this.coinScoreText);        
+        this.aGrid.placeAtIndex(index, this.coinScoreText);        
+    }
+    makeScorePanel(index){
+        this.deadZombie = this.add.image(0, 0, "deadZombie").setOrigin(0.4, 0);
+        Align.scaleToGameH(this.deadZombie, 1/20);
+        this.aGrid.placeAtIndex(index-0.5, this.deadZombie);
+        this.deadZombie.setScrollFactor(0);
+
+        // update zombie score
+        this.zombieScoreText = this.make.text({
+            x: 0,
+            y: 0,
+            padding: { x: 1, y: 4 },
+            text: this.user.score,
+            style: {
+                fontSize: '18px',
+                fontFamily: 'Arial',
+                color: 'white',
+                align: 'center'
+            },
+            add: true
+        });
+        this.zombieScoreText.setScrollFactor(0);
+        Align.scaleToGameH(this.zombieScoreText, 1/20);
+        this.zombieScoreText.setOrigin(-0.5, 0);
+        this.aGrid.placeAtIndex(index, this.zombieScoreText);        
+    }
+    makeBackButton(index){
+        this.backButton = this.add.image(0, 0, "back").setOrigin(0.4, 0.3);
+        Align.scaleToGameH(this.backButton, 1/10);
+        this.aGrid.placeAtIndex(index, this.backButton);
+        this.backButton.setScrollFactor(0);
+
+        this.backButton.setInteractive().on('pointerdown', function () {
+            let goBack = confirm("Going back will lose any unsaved data, are you sure you want to continue?")
+            if (goBack) {
+                this.scene.start("MenuScene");
+            }
+        }, this);
     }
     makeZombies(grid, zombieLocations){
         // add zombies group and add zombie at each location 
@@ -487,7 +534,7 @@ class MainGameScene extends Phaser.Scene {
 
             // launch quiz scene
             this.scene.pause();
-            this.scene.launch('QuizScene', {scene: this.scene, question: question});
+            this.scene.launch('QuizScene', {scene: this.scene, question: question, zombie: zombie});
         }
     }
     gameOver(){
