@@ -3,7 +3,6 @@ class MapScene extends Phaser.Scene {
         super('MapScene');
     }
     init(data){
-
         // init data for testing
         if (!data.level) {
             console.log('test data added');
@@ -15,72 +14,11 @@ class MapScene extends Phaser.Scene {
                 "score" : 0
             };  
         }
-
         // populate user
         this.user = data;
-
-        // get mapJSON for current zone (temporarily hard-coded)
-        this.mapJSON = {
-            "levels" : {
-                "1" : {
-                    "x" : 3,
-                    "y" : 22
-                },
-                "2" : {
-                    "x" : 7,
-                    "y" : 22
-                },
-                "3" : {
-                    "x" : 11,
-                    "y" : 22
-                },
-                "4" : {
-                    "x" : 11,
-                    "y" : 18
-                },
-                "5" : {
-                    "x" : 7,
-                    "y" : 18
-                },
-                "6" : {
-                    "x" : 3,
-                    "y" : 16
-                },
-                "7" : {
-                    "x" : 5,
-                    "y" : 14
-                },
-                "8" : {
-                    "x" : 9,
-                    "y" : 14
-                },
-                "9" : {
-                    "x" : 11,
-                    "y" : 10
-                },
-                "10" : {
-                    "x" : 5,
-                    "y" : 10
-                },
-            },
-            "pipes" : [
-                {"x":5, "y":22, "image":"pipeHorizontal"},
-                {"x":9, "y":22, "image":"pipeHorizontal"},
-                {"x":11, "y":20, "image":"pipeVertical"},
-                {"x":9, "y":18, "image":"pipeHorizontal"},
-                {"x":5, "y":18, "image":"pipeHorizontal"},
-                {"x":3, "y":18, "image":"pipeTopRight"},   
-                {"x":3, "y":14, "image":"pipeBottomRight"},   
-                {"x":7, "y":14, "image":"pipeHorizontal"},
-                {"x":3, "y":14, "image":"pipeBottomRight"},   
-                {"x":11, "y":14, "image":"pipeTopLeft"},   
-                {"x":11, "y":12, "image":"pipeVertical"},
-                {"x":9, "y":10, "image":"pipeHorizontal"},
-                {"x":7, "y":10, "image":"pipeHorizontal"},
-            ]
-        }
     }
     preload(){
+        this.load.json('zone', 'assets/data/zone'+this.user.zone+'.json');
         this.load.image('mapPanel', 'assets/game_map/map_panel.png');
         this.load.image('levelOpen', 'assets/game_map/level_open_2.png');
         this.load.image('levelComplete', 'assets/game_map/level_complete.png');
@@ -115,6 +53,7 @@ class MapScene extends Phaser.Scene {
         }, this);
 
         // build map
+        this.mapJSON = this.cache.json.get('zone')["map"];
         this.buildMap(this.mapJSON);
 
         // add zone text
