@@ -99,11 +99,14 @@ class MainGameScene extends Phaser.Scene {
         let coinLocations = this.cache.json.get('zone')["levels"][this.user.level]['coins'];
         this.makeCoins(this.blockGrid, coinLocations);
 
+        // add level panel
+        this.makeLevelPanel(1.8);
+
         // add score panel
-        this.makeScorePanel(3.5);
+        this.makeScorePanel(4);
 
         // add coin bag
-        this.makeCoinBag(5.5);
+        this.makeCoinBag(6);
 
         // add back button
         this.makeBackButton(7.5);
@@ -416,21 +419,42 @@ class MainGameScene extends Phaser.Scene {
         this.coinScoreText = this.make.text({
             x: 0,
             y: 0,
-            padding: { x: 1, y: 4 },
+            padding: { x: 1, y: 7 },
             text: this.user.gold,
             style: {
                 fontSize: '18px',
                 fontFamily: 'Arial',
                 color: 'white',
-                align: 'center'
+                align: 'left'
             },
             add: true
         });
         this.coinScoreText.setScrollFactor(0);
         Align.scaleToGameH(this.coinScoreText, 1/20);
-        this.coinScoreText.setOrigin(-0.5, 0);
+        this.coinScoreText.setOrigin(0, 0);
         this.aGrid.placeAtIndex(index, this.coinScoreText);        
     }
+    makeLevelPanel(index){
+        this.levelText = this.make.text({
+            x: 0,
+            y: 0,
+            padding: { x: 2, y: 7 },
+            text: "L"+this.user.level,
+            style: {
+                fontSize: '18px',
+                fontFamily: 'Arial',
+                // fontStyle: 'italic',
+                color: 'white',
+                align: 'center'
+            },
+            add: true
+        });
+        this.levelText.setScrollFactor(0);
+        Align.scaleToGameH(this.levelText, 1/20);
+        this.levelText.setOrigin(0, 0);
+        this.aGrid.placeAtIndex(index, this.levelText);        
+    }
+
     makeScorePanel(index){
         this.deadZombie = this.add.image(0, 0, "deadZombie").setOrigin(0.4, 0);
         Align.scaleToGameH(this.deadZombie, 1/20);
@@ -441,7 +465,7 @@ class MainGameScene extends Phaser.Scene {
         this.zombieScoreText = this.make.text({
             x: 0,
             y: 0,
-            padding: { x: 1, y: 4 },
+            padding: { x: 1, y: 7 },
             text: this.user.score,
             style: {
                 fontSize: '18px',
@@ -453,7 +477,7 @@ class MainGameScene extends Phaser.Scene {
         });
         this.zombieScoreText.setScrollFactor(0);
         Align.scaleToGameH(this.zombieScoreText, 1/20);
-        this.zombieScoreText.setOrigin(-0.5, 0);
+        this.zombieScoreText.setOrigin(0, 0);
         this.aGrid.placeAtIndex(index, this.zombieScoreText);        
     }
     makeBackButton(index){
