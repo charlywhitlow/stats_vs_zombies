@@ -100,7 +100,7 @@ class MainGameScene extends Phaser.Scene {
         this.makeCoins(this.blockGrid, coinLocations);
 
         // add level panel
-        this.makeLevelPanel(1.8);
+        this.makeLevelPanel(9);
 
         // add score panel
         this.makeScorePanel(4);
@@ -441,20 +441,20 @@ class MainGameScene extends Phaser.Scene {
         this.levelText = this.make.text({
             x: 0,
             y: 0,
-            padding: { x: 2, y: 7 },
-            text: "L"+this.user.level,
+            padding: { x: 1, y: 7 },
+            text: "Level "+this.user.level,
             style: {
                 fontSize: '18px',
                 fontFamily: 'Arial',
-                // fontStyle: 'italic',
+                fontStyle: 'italic',
                 color: 'white',
                 align: 'center'
             },
             add: true
         });
         this.levelText.setScrollFactor(0);
-        Align.scaleToGameH(this.levelText, 1/20);
-        this.levelText.setOrigin(0, 0);
+        Align.scaleToGameH(this.levelText, 1/21);
+        this.levelText.setOrigin(0.2, 0);
         this.aGrid.placeAtIndex(index, this.levelText);        
     }
 
