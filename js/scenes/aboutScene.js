@@ -4,6 +4,7 @@ class AboutScene extends Phaser.Scene {
     }
     preload(){
         this.load.image('menuBackground', 'assets/backgrounds/titleBackground.png');
+        this.load.image("back", 'assets/buttons/back_grey.png');
     }
     create() {
         // create screen grid
@@ -41,97 +42,24 @@ class AboutScene extends Phaser.Scene {
         };
         let p1 = this.addText(this.grid, "This web app is a prototype for a mobile gaming platform to teach core statistical concepts in an accesible way, created as part of a final year university project.", p1TextConfig);
         Align.centerH(p1);
-        
+
         // add back button
-        let backButton = this.addText(this.grid, "< Back", {
-            xIndex : 13,
-            yIndex : 1,
-            xWidth : 4,
-            yWidth : 1.8,
-            fontSize : '42px',
-            color: 'white',
-            backgroundColor: 'grey',
-        });
-        // Align.centerH(backButton);
-        backButton.setInteractive().on('pointerup', function () {
-            console.log('back to menu')
-            this.scene.start("MenuScene");
-        }, this);
-
-
-        // this.createTitleText();
-        // this.createIntroText(this.titleText, 30);
-        // this.createLaunchButton(this.introText, 80);
-        // this.createShareText(this.launchButton, 100);
-        // this.createShareQR(this.shareText, 20);
-        // this.createShareURL(this.shareQR, 20);
-        // this.createGithubText(this.shareURL, 50)
-        // this.createGithubButton(this.githubText, 0);
-
+        this.makeBackButton(0.1, 0.2, 0.15);
 
         // fade in
         this.cameras.main.fadeFrom(100, 0, 0, 0);
-
     }
-    // createLaunchButton(placeBelow, distance){
-    //     let launchY = placeBelow.y + (placeBelow.height * placeBelow._scaleY) + distance;
-    //     this.launchButton = this.make.text({
-    //         x: 0,
-    //         y: launchY,
-    //         padding: { x: 30, y: 30 },
-    //         text: 'Play the game',
-    //         style: {
-    //             fontSize: '64px',
-    //             fontFamily: 'Arial',
-    //             color: 'white',
-    //             align: 'center',
-    //             backgroundColor: '#d60007',
-    //         },
-    //         add: true
-    //     });
-    //     Align.scaleToGameW(this.launchButton, .6);
-    //     Align.centerH(this.launchButton);
-    //     this.launchButton.setInteractive().on('pointerup', function () {
-    //         this.launchGame();
-    //     }, this);
-    // }
+    makeBackButton(index, xOrigin, yOrigin){
+        this.backButton = this.add.image(0, 0, "back").setOrigin(xOrigin, yOrigin);
+        Align.scaleToGameH(this.backButton, 1/10);
+        this.grid.placeAtIndex(index, this.backButton);
+        this.backButton.setScrollFactor(0);
 
-    // createTitleText(){
-    //     this.titleText = this.make.text({
-    //         x: 0,
-    //         y: 50,
-    //         padding: { x: 32, y: 16 },
-    //         text: 'Stats Vs Zombies',
-    //         style: {
-    //             fontSize: '64px',
-    //             fontFamily: 'Arial',
-    //             color: 'black',
-    //             align: 'center',
-    //         },
-    //         add: true
-    //     });
-    //     Align.scaleToGameW(this.titleText, .8);
-    //     Align.centerH(this.titleText);
-    // }
-    // createIntroText(placeBelow, distance){
-    //     let introTextY = placeBelow.y + (placeBelow.height * placeBelow._scaleY) + distance;
-    //     this.introText = this.make.text({
-    //         x: 0,
-    //         y: introTextY,
-    //         padding: { x: 10, y: 10 },
-    //         text: 'This game is a prototype for a mobile gaming platform to teach core statistical concepts to undergraduate students.',
-    //         style: {
-    //             fontSize: '22px',
-    //             fontFamily: 'Arial',
-    //             color: 'black',
-    //             align: 'center',
-    //             wordWrap: { width: 340 }
-    //         },
-    //         add: true
-    //     });
-    //     Align.scaleToGameW(this.introText, .8);
-    //     Align.centerH(this.introText);
-    // }
+        // go back, no warning
+        this.backButton.setInteractive().on('pointerdown', function () {
+            this.scene.start("MenuScene");
+        }, this);
+    }
     createLaunchButton(placeBelow, distance){
         let launchY = placeBelow.y + (placeBelow.height * placeBelow._scaleY) + distance;
         this.launchButton = this.make.text({

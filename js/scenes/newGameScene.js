@@ -4,6 +4,7 @@ class NewGameScene extends Phaser.Scene {
     }
     preload(){
         this.load.image('menuBackground', 'assets/backgrounds/titleBackground.png');
+        this.load.image("back", 'assets/buttons/back_grey.png');
         this.load.html('createUserForm', 'assets/html/newUser.html');
     }
     create() {
@@ -51,19 +52,7 @@ class NewGameScene extends Phaser.Scene {
         });
 
         // add back button
-        let backButton = this.addText(this.grid, "< Back", {
-            xIndex : 13,
-            yIndex : 1,
-            xWidth : 4,
-            yWidth : 1.8,
-            fontSize : '42px',
-            color: 'white',
-            backgroundColor: 'grey',
-        });
-        backButton.setInteractive().on('pointerup', function () {
-            console.log('back to menu')
-            this.scene.start("MenuScene");
-        }, this);
+        this.makeBackButton(0.1, 0.2, 0.15);
 
         // fade in
         this.cameras.main.fadeFrom(100, 0, 0, 0);
@@ -78,6 +67,17 @@ class NewGameScene extends Phaser.Scene {
             "score" : 0
         };
         this.scene.start("MapScene", user);
+    }
+    makeBackButton(index, xOrigin, yOrigin){
+        this.backButton = this.add.image(0, 0, "back").setOrigin(xOrigin, yOrigin);
+        Align.scaleToGameH(this.backButton, 1/10);
+        this.grid.placeAtIndex(index, this.backButton);
+        this.backButton.setScrollFactor(0);
+
+        // go back, no warning
+        this.backButton.setInteractive().on('pointerdown', function () {
+            this.scene.start("MenuScene");
+        }, this);
     }
     addText(grid, text, config){
         // options: xIndex, yIndex, xWidth, yWidth, xPadding, yPadding

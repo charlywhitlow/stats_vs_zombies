@@ -3,6 +3,10 @@ class PauseButton extends Phaser.Scene {
         super();
         this.scene = config.scene;
         this.grid = config.grid;
+        this.index = 7;
+        this.scale = 0.18;
+        this.xOrigin = 0.1;
+        this.yOrigin = 0.25;
 
         // add buttons
         this.pauseButton();
@@ -14,16 +18,18 @@ class PauseButton extends Phaser.Scene {
 
     // create buttons
     pauseButton(){
-        this.pauseButton = this.scene.add.image(6, 7, "pause").setOrigin(0, 0);
-        Align.scaleToGameW(this.pauseButton, 0.18);
+        this.pauseButton = this.scene.add.image(0, 0, "pause").setOrigin(this.xOrigin, this.yOrigin);
+        Align.scaleToGameW(this.pauseButton, this.scale);
+        this.grid.placeAtIndex(this.index, this.pauseButton);
         this.pauseButton.setScrollFactor(0);
         this.pauseButton.setInteractive();
         this.pauseButton.on('pointerdown', this.pause.bind(this));
         this.pauseButton.visible = true;        
     }
     playButton(){
-        this.playButton = this.scene.add.image(6, 7, "play").setOrigin(0, 0);
-        Align.scaleToGameW(this.playButton, 0.18);
+        this.playButton = this.scene.add.image(0, 0, "play").setOrigin(this.xOrigin, this.yOrigin);
+        Align.scaleToGameW(this.playButton, this.scale);
+        this.grid.placeAtIndex(this.index, this.playButton);
         this.playButton.setScrollFactor(0);
         this.playButton.setInteractive();
         this.playButton.on('pointerdown', this.play.bind(this));

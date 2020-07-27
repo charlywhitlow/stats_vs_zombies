@@ -41,7 +41,7 @@ class MainGameScene extends Phaser.Scene {
         this.load.image("jumpButton", "assets/buttons/jump.bmp");
         this.load.image("shootButton", "assets/buttons/shoot.bmp");
         this.load.image("pause", "assets/buttons/pause_icon.png");
-        this.load.image("back", 'assets/buttons/back.png');
+        this.load.image("back", 'assets/buttons/back_grey.png');
         this.load.image("play", "assets/buttons/play_icon.png");
     }
     create()
@@ -106,17 +106,16 @@ class MainGameScene extends Phaser.Scene {
         this.makeScorePanel(4);
 
         // add coin bag
-        this.makeCoinBag(6);
+        this.makeCoinBag(5.8);
 
         // add back button
-        this.makeBackButton(7.5);
+        this.makeBackButtonWithWarning(0.1, 0.4, 0.3);
 
         // add pause button
         this.pauseButton = new PauseButton({
             scene: this,
             grid: this.aGrid
         });
-        this.aGrid.placeAtIndex(0, this.pauseButton);
 
         // add game pad
         this.gamePad = new GamePad({
@@ -441,20 +440,20 @@ class MainGameScene extends Phaser.Scene {
         this.levelText = this.make.text({
             x: 0,
             y: 0,
-            padding: { x: 1, y: 7 },
+            padding: { x: 0, y: 6 },
             text: "Level "+this.user.level,
             style: {
                 fontSize: '18px',
                 fontFamily: 'Arial',
-                fontStyle: 'italic',
+                // fontStyle: 'italic',
                 color: 'white',
                 align: 'center'
             },
             add: true
         });
         this.levelText.setScrollFactor(0);
-        Align.scaleToGameH(this.levelText, 1/21);
-        this.levelText.setOrigin(0.2, 0);
+        Align.scaleToGameH(this.levelText, 1/25);
+        this.levelText.setOrigin(0.22, 0);
         this.aGrid.placeAtIndex(index, this.levelText);        
     }
 
@@ -483,12 +482,13 @@ class MainGameScene extends Phaser.Scene {
         this.zombieScoreText.setOrigin(0, 0);
         this.aGrid.placeAtIndex(index, this.zombieScoreText);        
     }
-    makeBackButton(index){
-        this.backButton = this.add.image(0, 0, "back").setOrigin(0.4, 0.3);
+    makeBackButtonWithWarning(index, xOrigin, yOrigin){
+        this.backButton = this.add.image(0, 0, "back").setOrigin(xOrigin, yOrigin);
         Align.scaleToGameH(this.backButton, 1/10);
         this.aGrid.placeAtIndex(index, this.backButton);
         this.backButton.setScrollFactor(0);
 
+        // go back, after warning
         this.backButton.setInteractive().on('pointerdown', function () {
             let goBack = confirm("Going back will lose any unsaved data, are you sure you want to continue?")
             if (goBack) {
