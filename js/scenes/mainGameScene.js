@@ -235,20 +235,23 @@ class MainGameScene extends Phaser.Scene {
 
     }
     killZombie(star, zombie){
+
         // remove star and set zombie falling off screen
         star.destroy();
-        zombie.rotation = 0.6;
-        zombie.active = false;
-        zombie.setVelocityY(300);
+        if (zombie.active) {
+            zombie.rotation = 0.6;
+            zombie.setVelocityY(300);
+            zombie.active = false;
 
-        // increment score
-        this.scene.user.score ++;
-        this.scene.zombieScoreText.setText(this.scene.user.score);
+            // increment score
+            this.scene.user.score ++;
+            this.scene.zombieScoreText.setText(this.scene.user.score);
 
-        // destroy zombie after delay
-        this.scene.time.addEvent({ delay: 1000, callback: function(){
-            zombie.destroy();
-        }, callbackScope: this, loop: false });
+            // destroy zombie after delay
+            this.scene.time.addEvent({ delay: 1000, callback: function(){
+                zombie.destroy();
+            }, callbackScope: this, loop: false });
+        }
     }
     pause(){
         this.scene.pause();

@@ -231,8 +231,6 @@ class QuizScene extends Phaser.Scene {
         }
     }
     correctAnswer(){
-        console.log('correct answer');
-        
         // increment score and set zombie falling off screen
         this.returnScene.scene.user.score ++;
         this.returnScene.scene.zombieScoreText.setText(this.returnScene.scene.user.score);
@@ -245,8 +243,6 @@ class QuizScene extends Phaser.Scene {
         this.time.delayedCall(600, this.returnToScene.bind(this), [], this);
     }
     wrongAnswer(){
-        console.log('wrong answer');
-
         // return to scene after delay
         this.time.delayedCall(1200, this.returnToScene.bind(this), [], this);
     }
