@@ -52,7 +52,11 @@ class NewGameScene extends Phaser.Scene {
         });
 
         // add back button
-        this.makeBackButton(0.1, 0.2, 0.15);
+        this.backButton = new BackButton({
+            scene: this,
+            returnSceneName: "MenuScene",
+            warning: null
+        });
 
         // fade in
         this.cameras.main.fadeFrom(100, 0, 0, 0);
@@ -67,17 +71,6 @@ class NewGameScene extends Phaser.Scene {
             "score" : 0
         };
         this.scene.start("MapScene", user);
-    }
-    makeBackButton(index, xOrigin, yOrigin){
-        this.backButton = this.add.image(0, 0, "back").setOrigin(xOrigin, yOrigin);
-        Align.scaleToGameH(this.backButton, 1/10);
-        this.grid.placeAtIndex(index, this.backButton);
-        this.backButton.setScrollFactor(0);
-
-        // go back, no warning
-        this.backButton.setInteractive().on('pointerdown', function () {
-            this.scene.start("MenuScene");
-        }, this);
     }
     addText(grid, text, config){
         // options: xIndex, yIndex, xWidth, yWidth, xPadding, yPadding

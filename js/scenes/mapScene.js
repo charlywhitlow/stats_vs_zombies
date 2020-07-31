@@ -92,8 +92,12 @@ class MapScene extends Phaser.Scene {
         Align.centerH(startText);
 
         // add back button
-        this.makeBackButtonWithWarning(0.1, 0.2, 0.15);
-
+        this.backButton = new BackButton({
+            scene: this,
+            returnSceneName: "MenuScene",
+            warning: "Going back will lose any unsaved data, are you sure?"
+        });
+        
         // fade in
         this.cameras.main.fadeFrom(500, 0, 0, 0);
 
@@ -139,20 +143,6 @@ class MapScene extends Phaser.Scene {
             Align.scaleToGameW(pipe, 0.11);
             this.grid.placeAt(i['x'], i['y'], pipe);
         });
-    }
-    makeBackButtonWithWarning(index, xOrigin, yOrigin){
-        this.backButton = this.add.image(0, 0, "back").setOrigin(xOrigin, yOrigin);
-        Align.scaleToGameH(this.backButton, 1/10);
-        this.grid.placeAtIndex(index, this.backButton);
-        this.backButton.setScrollFactor(0);
-
-        // go back, after warning
-        this.backButton.setInteractive().on('pointerdown', function () {
-            let goBack = confirm("Going back will lose any unsaved data, are you sure you want to continue?")
-            if (goBack) {
-                this.scene.start("MenuScene");
-            }
-        }, this);
     }
     addText(grid, text, config){
         // options: xIndex, yIndex, xWidth, yWidth, xPadding, yPadding

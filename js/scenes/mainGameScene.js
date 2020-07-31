@@ -109,7 +109,11 @@ class MainGameScene extends Phaser.Scene {
         this.makeCoinBag(5.8);
 
         // add back button
-        this.makeBackButtonWithWarning(0.1, 0.4, 0.3);
+        this.backButton = new BackButton({
+            scene: this,
+            returnSceneName: "MapScene",
+            warning: "Going back will lose any unsaved data, are you sure?"
+        });
 
         // add pause button
         this.pauseButton = new PauseButton({
@@ -481,20 +485,6 @@ class MainGameScene extends Phaser.Scene {
         Align.scaleToGameH(this.zombieScoreText, 1/20);
         this.zombieScoreText.setOrigin(0, 0);
         this.aGrid.placeAtIndex(index, this.zombieScoreText);        
-    }
-    makeBackButtonWithWarning(index, xOrigin, yOrigin){
-        this.backButton = this.add.image(0, 0, "back").setOrigin(xOrigin, yOrigin);
-        Align.scaleToGameH(this.backButton, 1/10);
-        this.aGrid.placeAtIndex(index, this.backButton);
-        this.backButton.setScrollFactor(0);
-
-        // go back, after warning
-        this.backButton.setInteractive().on('pointerdown', function () {
-            let goBack = confirm("Going back will lose any unsaved data, are you sure you want to continue?")
-            if (goBack) {
-                this.scene.start("MenuScene");
-            }
-        }, this);
     }
     makeZombies(grid, zombieLocations){
         // add zombies group and add zombie at each location 
