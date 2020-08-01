@@ -41,7 +41,8 @@ class MainGameScene extends Phaser.Scene {
 
         this.load.image("controlBack", "assets/backgrounds/metal.png");
         this.load.image("jumpButton", "assets/buttons/jump.bmp");
-        this.load.image("shootButton", "assets/buttons/shoot.bmp");
+        this.load.image("shootButtonActive", "assets/buttons/shoot_active.png");
+        this.load.image("shootButtonInactive", "assets/buttons/shoot_inactive.png");
         this.load.image("pause", "assets/buttons/pause_icon.png");
         this.load.image("back", 'assets/buttons/back.png');
         this.load.image("play", "assets/buttons/play_icon.png");
@@ -206,8 +207,8 @@ class MainGameScene extends Phaser.Scene {
             case "JUMP":
                 this.jump();
                 break;
-            case "SHOOT":
-                this.shoot();
+            case "SHOOT_REQUEST":
+                this.shootStar();
                 break;
             case "PAUSE":
                 this.pause();
@@ -227,25 +228,31 @@ class MainGameScene extends Phaser.Scene {
             this.player.jump = 0;
         }
     }
-    createStarsGroup(){
-        this.stars = this.physics.add.group();
-        this.physics.add.overlap(this.stars, this.zombies, this.killZombie, null, this.zombies);
-    }
-    shoot(){
-        // shoot star
-        let star = this.physics.add.sprite(0, 0, 'star');
-        this.stars.add(star);
-        Align.scaleToGameW(star, 1/15);
-        star.x = this.player.x + 10;
-        star.y = this.player.y;
-        star.setVelocityX(800);
-        star.setGravityY(50);
+    shootStar(){
+        // shoot star if available
+        if (this.gamePad.shootButton.active == true){
+            let star = this.physics.add.sprite(0, 0, 'star');
+            this.shootingStars.add(star);
+            Align.scaleToGameW(star, 1/16);
+            star.x = this.player.x + 10;
+            star.y = this.player.y;
+            star.setVelocityX(800);
+            star.setGravityY(50);
 
-        // destroy star after delay
-        this.time.addEvent({ delay: 900, callback: function(){
-            star.destroy();
-        }, callbackScope: this, loop: false });
+            // decrement stars
+            this.user.stars -= 1;
+            this.starScoreText.setText(this.user.stars);
 
+            // disable shoot button if new score is 0
+            if (this.user.stars == 0) {
+                this.gamePad.deactivateShoot();
+            }
+
+            // destroy star after delay
+            this.time.addEvent({ delay: 900, callback: function(){
+                star.destroy();
+            }, callbackScope: this, loop: false });
+        }
     }
     killZombie(star, zombie){
 
@@ -394,6 +401,7 @@ class MainGameScene extends Phaser.Scene {
         star.disableBody(true, true);
         this.user.stars += 1;
         this.starScoreText.setText(this.user.stars);
+        this.gamePad.activateShoot();
     }
     makeCoins(grid, coinLocations){
         // make coins and add
