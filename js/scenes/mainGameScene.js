@@ -258,7 +258,7 @@ class MainGameScene extends Phaser.Scene {
     }
     pause(){
         this.scene.pause();
-        this.scene.launch('pauseScene', this.scene);
+        this.scene.launch('PauseScene', this.scene);
     }
     placeBlock(i, key, group) {
         let block = this.physics.add.sprite(0, 0, key);

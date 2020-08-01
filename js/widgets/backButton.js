@@ -22,19 +22,16 @@ class BackButton extends UIBlock {
         Align.scaleToGameH(this.backButton, scale);
         this.grid.placeAtIndex(index, this.backButton);
         this.backButton.setScrollFactor(0);
-
-        // add to panel?
-        this.add(this.backButton);
-
-        // go back, after warning if applicable
-        this.backButton.setInteractive().on('pointerdown', function () {
-            let goBack = true;
-            if (this.warning != null && this.warning.length > 0){
-                goBack = confirm(this.warning);
-            }
-            if (goBack) {
-                this.scene.scene.start(this.returnSceneName);
-            }
-        }, this);
-   }
+        this.backButton.setInteractive().on('pointerdown', this.goBack.bind(this));
+    }
+    goBack(){
+        let goBack = true;
+        if (this.warning != null && this.warning.length > 0){
+            goBack = confirm(this.warning);
+        }
+        if (goBack) {
+            this.scene.scene.start(this.returnSceneName);
+        }
+        return goBack;
+    }
 }
