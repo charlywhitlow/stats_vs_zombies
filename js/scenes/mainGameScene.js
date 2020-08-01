@@ -168,26 +168,29 @@ class MainGameScene extends Phaser.Scene {
     update()
     {
         // animate player
-        if (this.player.jumping) {
-            this.player.play('ninjaJump', true);            
-        }else if (this.player.landed) {
-            this.player.setVelocityX(this.player.velocityX);
-            this.player.play('ninjaRun', true);
-        }else{
-            this.player.play('ninjaFall', true);
+        if (this.player.scene != undefined) {
+            if (this.player.jumping) {
+                this.player.play('ninjaJump', true);
+            }else if (this.player.landed) {
+                this.player.setVelocityX(this.player.velocityX);
+                this.player.play('ninjaRun', true);
+            }else{
+                this.player.play('ninjaFall', true);
+            }
         }
-
         // animate coins
-        this.coins.children.iterate(function (child){
-            child.play('spin', true);
-        });
-
+        if (this.coins.children != undefined) {
+            this.coins.children.iterate(function (child){
+                child.play('spin', true);
+            });
+        }
         // animate zombies
-        this.zombies.children.iterate(function (child){
-            child.play('zombieLeft', true);
-        });
+        if (this.zombies.children != undefined) {
+            this.zombies.children.iterate(function (child){
+                child.play('zombieLeft', true);
+            });
+        }
     }
-
     setListeners() {
         this.emitter.on('CONTROL_PRESSED', this.controlPressed.bind(this));
     }
