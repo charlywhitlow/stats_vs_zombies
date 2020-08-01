@@ -111,7 +111,7 @@ class MainGameScene extends Phaser.Scene {
         this.starScoreText = this.makePanelItem(2.25, "star", 1/36, 0.32, -0.4, this.user.stars, 1/20);
 
         // add score panel
-        this.zombieScoreText = this.makePanelItem(4, "deadZombie", 1/20, 0.4, 0, this.user.gold, 1/20);
+        this.zombieScoreText = this.makePanelItem(4, "deadZombie", 1/20, 0.4, 0, this.user.score, 1/20);
 
         // add coin bag
         this.coinScoreText = this.makePanelItem(5.8, "bag", 1/20, 0.4, 0, this.user.gold, 1/20);
