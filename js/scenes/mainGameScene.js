@@ -11,6 +11,7 @@ class MainGameScene extends Phaser.Scene {
                 "zone" : 1,
                 "level" : 1,
                 "gold" : 0,
+                "stars" : 0,
                 "score" : 0
             }                
         }
@@ -21,7 +22,8 @@ class MainGameScene extends Phaser.Scene {
         }else{
             this.user = Object.assign({}, this.initialData);
         }
-        console.log("welcome "+this.user.username+"!\nzone: "+this.user.zone+"\nlevel: "+this.user.level+"\nscore: "+this.user.score+"\nstarting gold: "+this.user.gold);
+        console.log("welcome "+this.user.username+"!\n zone: "+this.user.zone+"\n level: "+this.user.level+
+            "\n score: "+this.user.score+"\n gold: "+this.user.gold+"\n stars: "+this.user.stars);
     }
     preload()
     {
@@ -89,12 +91,14 @@ class MainGameScene extends Phaser.Scene {
         let zombieLocations = this.cache.json.get('zone')["levels"][this.user.level]['zombies'];
         this.makeZombies(this.blockGrid, zombieLocations);
 
-        // add stars
-        // var starLocations = [5, 10, 11, 12, 13, 18, 19, 20, 30, 32, 36, 42];
-        // var starLocations = [55];
-        // this.makeStars(this.blockGrid, starLocations);
-        this.createStarsGroup();
+        // create stars for shooting
+        this.shootingStars = this.physics.add.group();
+        this.physics.add.overlap(this.shootingStars, this.zombies, this.killZombie, null, this.zombies);
 
+        // make collectable stars
+        let starLocations = this.cache.json.get('zone')["levels"][this.user.level]['stars'];
+        this.makeStars(this.blockGrid, starLocations);
+                
         // make coins
         let coinLocations = this.cache.json.get('zone')["levels"][this.user.level]['coins'];
         this.makeCoins(this.blockGrid, coinLocations);
@@ -102,12 +106,15 @@ class MainGameScene extends Phaser.Scene {
         // add level panel
         this.makeLevelPanel(9);
 
+        // add star panel
+        this.starScoreText = this.makePanelItem(2.25, "star", 1/36, 0.32, -0.4, this.user.stars, 1/20);
+
         // add score panel
-        this.makeScorePanel(4);
+        this.zombieScoreText = this.makePanelItem(4, "deadZombie", 1/20, 0.4, 0, this.user.gold, 1/20);
 
         // add coin bag
-        this.makeCoinBag(5.8);
-
+        this.coinScoreText = this.makePanelItem(5.8, "bag", 1/20, 0.4, 0, this.user.gold, 1/20);
+    
         // add back button
         this.backButton = new BackButton({
             scene: this,
@@ -371,25 +378,23 @@ class MainGameScene extends Phaser.Scene {
             this.player.jumping = false;
         }
     }
-    // makeStars(grid, starLocations){
-    //     this.stars = this.physics.add.group();
-    //     starLocations.forEach(i => {
-    //         let star = this.physics.add.sprite(0, 0, 'star');
-    //         this.stars.add(star);
-    //         grid.placeAtIndex(i, star);
-    //         Align.scaleToGameW(star, 1/15);    
-    //     });
-    //     this.stars.children.iterate(function (child){
-    //         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.6));
-    //         child.setGravityY(300);
-    //     });
-    //     this.physics.add.collider(this.stars, this.platformGroup);
-    //     this.physics.add.overlap(this.stars, this.player, this.collectStar, null, this);
-    // }
-    // collectStar(player, star){
-    //     star.disableBody(true, true);
-    //     console.log("star collected!");
-    // }
+    makeStars(grid, starLocations){
+        this.stars = this.physics.add.group();
+        starLocations.forEach(starLocation => {
+            let i = this.blockGrid.getFirstCellInRow(starLocation.row) + starLocation.col;
+            let star = this.physics.add.sprite(0, 0, 'star');
+            this.stars.add(star);
+            grid.placeAtIndex(i, star);
+            Align.scaleToGameW(star, 1/15);
+        });
+        this.physics.add.collider(this.stars, this.platformGroup);
+        this.physics.add.overlap(this.stars, this.player, this.collectStar, null, this);
+    }
+    collectStar(player, star){
+        star.disableBody(true, true);
+        this.user.stars += 1;
+        this.starScoreText.setText(this.user.stars);
+    }
     makeCoins(grid, coinLocations){
         // make coins and add
         this.coins = this.physics.add.group();
@@ -417,19 +422,19 @@ class MainGameScene extends Phaser.Scene {
         this.user.gold += 1;
         this.coinScoreText.setText(this.user.gold);
     }
-    makeCoinBag(index){
-        // add coin bag
-        this.bag = this.add.image(0, 0, "bag").setOrigin(0.4, 0);
-        Align.scaleToGameH(this.bag, 1/20);
-        this.aGrid.placeAtIndex(index-0.5, this.bag);
-        this.bag.setScrollFactor(0);
+    makePanelItem(index, iconImage, iconScale, xOffset, yOffset, startText, textScale){
+        // add icon
+        let iconObj = this.add.image(0, 0, iconImage).setOrigin(xOffset, yOffset);
+        Align.scaleToGameH(iconObj, iconScale);
+        this.aGrid.placeAtIndex(index-0.5, iconObj);
+        iconObj.setScrollFactor(0);
 
-        // update coin score
-        this.coinScoreText = this.make.text({
+        // add score text
+        let textObj = this.make.text({
             x: 0,
             y: 0,
             padding: { x: 1, y: 7 },
-            text: this.user.gold,
+            text: startText,
             style: {
                 fontSize: '18px',
                 fontFamily: 'Arial',
@@ -438,10 +443,11 @@ class MainGameScene extends Phaser.Scene {
             },
             add: true
         });
-        this.coinScoreText.setScrollFactor(0);
-        Align.scaleToGameH(this.coinScoreText, 1/20);
-        this.coinScoreText.setOrigin(0, 0);
-        this.aGrid.placeAtIndex(index, this.coinScoreText);        
+        textObj.setScrollFactor(0);
+        Align.scaleToGameH(textObj, textScale);
+        textObj.setOrigin(0, 0);
+        this.aGrid.placeAtIndex(index, textObj);
+        return textObj;
     }
     makeLevelPanel(index){
         this.levelText = this.make.text({
@@ -462,32 +468,6 @@ class MainGameScene extends Phaser.Scene {
         Align.scaleToGameH(this.levelText, 1/25);
         this.levelText.setOrigin(0.22, 0);
         this.aGrid.placeAtIndex(index, this.levelText);        
-    }
-
-    makeScorePanel(index){
-        this.deadZombie = this.add.image(0, 0, "deadZombie").setOrigin(0.4, 0);
-        Align.scaleToGameH(this.deadZombie, 1/20);
-        this.aGrid.placeAtIndex(index-0.5, this.deadZombie);
-        this.deadZombie.setScrollFactor(0);
-
-        // update zombie score
-        this.zombieScoreText = this.make.text({
-            x: 0,
-            y: 0,
-            padding: { x: 1, y: 7 },
-            text: this.user.score,
-            style: {
-                fontSize: '18px',
-                fontFamily: 'Arial',
-                color: 'white',
-                align: 'center'
-            },
-            add: true
-        });
-        this.zombieScoreText.setScrollFactor(0);
-        Align.scaleToGameH(this.zombieScoreText, 1/20);
-        this.zombieScoreText.setOrigin(0, 0);
-        this.aGrid.placeAtIndex(index, this.zombieScoreText);        
     }
     makeZombies(grid, zombieLocations){
         // add zombies group and add zombie at each location 
