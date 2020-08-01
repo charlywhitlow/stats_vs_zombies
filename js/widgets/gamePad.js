@@ -36,8 +36,6 @@ class GamePad extends UIBlock {
             child.setScrollFactor(0);
         });
     }
-
-    // button events
     jump(){
         this.emitter.emit("CONTROL_PRESSED", "JUMP");
     }

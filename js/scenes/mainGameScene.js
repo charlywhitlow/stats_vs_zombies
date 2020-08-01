@@ -255,7 +255,6 @@ class MainGameScene extends Phaser.Scene {
         }
     }
     killZombie(star, zombie){
-
         // remove star and set zombie falling off screen
         star.destroy();
         if (zombie.active) {
@@ -584,7 +583,10 @@ class MainGameScene extends Phaser.Scene {
 
             // fade out to black
             this.cameras.main.fade(800, 0, 0, 0);
-            this.user.level ++;          
+            this.user.level ++;
+
+            // destroy emitter instance
+            this.emitter.destroy();
 
             // launch map scene
             this.cameras.main.on('camerafadeoutcomplete', function () {
