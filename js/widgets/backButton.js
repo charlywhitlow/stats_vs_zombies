@@ -8,7 +8,7 @@ class BackButton extends UIBlock {
         let index = 0;
         let xOrigin = 0.3;
         let yOrigin = 0.25;
-        let scale = 1/9;
+        let scale = 1/8.5;
 
         // create grid
         this.grid = new AlignGrid({

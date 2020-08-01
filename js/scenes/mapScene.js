@@ -26,7 +26,7 @@ class MapScene extends Phaser.Scene {
         this.load.image('levelBossClosed', 'assets/game_map/level_boss_closed.png');
         this.load.image('levelBossOpen', 'assets/game_map/level_boss_open.png');
         this.load.image('arrow', 'assets/game_map/arrow.png');
-        this.load.image("back", 'assets/buttons/back_grey.png');
+        this.load.image("back", 'assets/buttons/back.png');
 
         this.load.image('pipeHorizontal', 'assets/game_map/pipe_horizontal.png');
         this.load.image('pipeVertical', 'assets/game_map/pipe_vertical.png');

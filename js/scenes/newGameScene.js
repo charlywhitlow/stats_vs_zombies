@@ -4,7 +4,7 @@ class NewGameScene extends Phaser.Scene {
     }
     preload(){
         this.load.image('menuBackground', 'assets/backgrounds/titleBackground.png');
-        this.load.image("back", 'assets/buttons/back_grey.png');
+        this.load.image("back", 'assets/buttons/back.png');
         this.load.html('createUserForm', 'assets/html/newUser.html');
     }
     create() {
