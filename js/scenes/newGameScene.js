@@ -68,7 +68,8 @@ class NewGameScene extends Phaser.Scene {
             "zone" : 1,
             "level" : 1,
             "gold" : 0,
-            "score" : 0
+            "score" : 0,
+            "stars" : 0
         };
         this.scene.start("MapScene", user);
     }
