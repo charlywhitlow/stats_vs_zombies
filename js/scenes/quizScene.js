@@ -75,7 +75,8 @@ class QuizScene extends Phaser.Scene {
         });
 
         // draw popup rectangle
-        this.box = this.boxGrid.drawBox(1, 1, 16, 24, 0xFFFFFF);
+        this.y = 5;
+        this.box = this.boxGrid.drawBox(1, this.y, 16, 24, 0xFFFFFF);
 
         // add question text
         let questionConfig = {
@@ -101,21 +102,21 @@ class QuizScene extends Phaser.Scene {
         // text only layout
         if (config.type == "textOnly") {
             config.xIndex = 2;
-            config.yIndex = 3;
+            config.yIndex = this.y + 3;
             config.xWidth = 14;
             config.yWidth = 11;
         }
         // image and text layout
         if (config.type == "image") {
             config.xIndex = 2;
-            config.yIndex = 12;
+            config.yIndex = this.y + 12;
             config.xWidth = 14;
             config.yWidth = 3;
 
             // add image
             let image = this.add.image(0, 0, 'questionImage').setOrigin(0, 0);
             Align.scaleToGameH(image, .30);
-            this.boxGrid.placeAtIndex(30, image);
+            this.boxGrid.placeAtIndex(110, image);
             Align.centerH(image);
         }
 
@@ -148,7 +149,7 @@ class QuizScene extends Phaser.Scene {
         let aConfig = {
             text: 'a) '+this.questionAnswers[answerOrder[0]].text,
             xIndex: 2,
-            yIndex: 16,
+            yIndex: this.y+15,
             xWidth: 6.5,
             yWidth: 3.5,
             correct: this.questionAnswers[answerOrder[0]].correct
@@ -156,7 +157,7 @@ class QuizScene extends Phaser.Scene {
         let bConfig = {
             text: 'b) '+this.questionAnswers[answerOrder[1]].text,
             xIndex: 9.5,
-            yIndex: 16,
+            yIndex: this.y+15,
             xWidth: 6.5,
             yWidth: 3.5,
             correct: this.questionAnswers[answerOrder[1]].correct
@@ -164,7 +165,7 @@ class QuizScene extends Phaser.Scene {
         let cConfig = {
             text: 'c) '+this.questionAnswers[answerOrder[2]].text,
             xIndex: 2,
-            yIndex: 20.5,
+            yIndex: this.y+19.5,
             xWidth: 6.5,
             yWidth: 3.5,
             correct: this.questionAnswers[answerOrder[2]].correct
@@ -172,7 +173,7 @@ class QuizScene extends Phaser.Scene {
         let dConfig = {
             text: 'd) '+this.questionAnswers[answerOrder[3]].text,
             xIndex: 9.5,
-            yIndex: 20.5,
+            yIndex: this.y+19.5,
             xWidth: 6.5,
             yWidth: 3.5,
             correct: this.questionAnswers[answerOrder[3]].correct
