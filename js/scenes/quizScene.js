@@ -239,12 +239,24 @@ class QuizScene extends Phaser.Scene {
         this.time.delayedCall(600, this.returnToScene.bind(this), [], this);
     }
     wrongAnswer(){
-        // return to scene after delay
-        this.time.delayedCall(1200, this.returnToScene.bind(this), [], this);
+        // update health
+        this.returnScene.scene.user.health--;
+        this.returnScene.scene.healthBar.draw();
+
+        // return to scene / game over after delay
+        if (this.returnScene.scene.user.health == 0){
+            this.time.delayedCall(1200, this.gameOver.bind(this), [], this);
+        }else{
+            this.time.delayedCall(1200, this.returnToScene.bind(this), [], this);
+        }
     }
     returnToScene(){
         this.scene.stop(this.scene.key);
         this.scene.resume(this.returnScene.key);
+    }
+    gameOver(){
+        this.scene.stop(this.scene.key);
+        this.returnScene.scene.gameOver();
     }
     shuffleArray(array) {
         // shuffle input array

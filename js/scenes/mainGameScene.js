@@ -10,6 +10,7 @@ class MainGameScene extends Phaser.Scene {
                 "username" : "newPlayer",
                 "zone" : 1,
                 "level" : 1,
+                "health" : 3,
                 "gold" : 0,
                 "stars" : 0,
                 "score" : 0
@@ -23,7 +24,7 @@ class MainGameScene extends Phaser.Scene {
             this.user = Object.assign({}, this.initialData);
         }
         console.log("welcome "+this.user.username+"!\n zone: "+this.user.zone+"\n level: "+this.user.level+
-            "\n score: "+this.user.score+"\n gold: "+this.user.gold+"\n stars: "+this.user.stars);
+            "\n health: "+this.user.health+"\n score: "+this.user.score+"\n gold: "+this.user.gold+"\n stars: "+this.user.stars);
     }
     preload()
     {
@@ -139,6 +140,9 @@ class MainGameScene extends Phaser.Scene {
             grid: this.aGrid
         });
         this.aGrid.placeAtIndex(108, this.gamePad);
+
+        // add health bar
+        this.healthBar = new HealthBar(this);
 
         // camera
         this.cameras.main.fadeFrom(500, 0, 0, 0);
@@ -530,7 +534,11 @@ class MainGameScene extends Phaser.Scene {
     }
     gameOver(){
         // pause and launch game over scene
-        this.restarted = true; // to indicate user should be reset to initial values
+        this.restarted = true; // to reset user to initial values
+        if (this.user.health > 0){
+            this.user.health = 0;
+            this.healthBar.draw();
+        }
         this.scene.pause();
         this.scene.launch('GameOverScene', this.scene);
     }

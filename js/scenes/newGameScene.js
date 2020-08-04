@@ -67,6 +67,7 @@ class NewGameScene extends Phaser.Scene {
             "username" : username,
             "zone" : 1,
             "level" : 1,
+            "health" : 3,
             "gold" : 0,
             "score" : 0,
             "stars" : 0

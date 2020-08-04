@@ -10,6 +10,7 @@ class MapScene extends Phaser.Scene {
                 "username" : "newPlayer",
                 "zone" : 1,
                 "level" : 1,
+                "health" : 3,
                 "gold" : 0,
                 "score" : 0,
                 "stars" : 0
@@ -51,6 +52,8 @@ class MapScene extends Phaser.Scene {
         Align.centerH(this.mapPanel);
         Align.stretchToGameH(this.mapPanel, 0.62);
         this.mapPanel.setInteractive().on('pointerup', function () {
+            // increment health and start level
+            this.user.health < 3 ? this.user.health ++ : this.user.health;
             this.scene.start("MainGameScene", this.user);
         }, this);
 
