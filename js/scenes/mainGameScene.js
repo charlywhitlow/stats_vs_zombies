@@ -107,13 +107,15 @@ class MainGameScene extends Phaser.Scene {
         // add level panel
         this.makeLevelPanel(9);
 
+        // add coin bag
+        this.coinScoreText = this.makePanelItem(2.25, "bag", 1/20, 0.4, 0, this.user.gold, 1/20);
 
         // add score panel
         this.zombieScoreText = this.makePanelItem(4, "deadZombie", 1/20, 0.4, 0, this.user.score, 1/20);
 
-        // add coin bag
-        this.coinScoreText = this.makePanelItem(5.8, "bag", 1/20, 0.4, 0, this.user.gold, 1/20);
-    
+        // add health bar
+        this.healthBar = new HealthBar(this);
+
         // add back button
         this.backButton = new BackButton({
             scene: this,
@@ -133,9 +135,6 @@ class MainGameScene extends Phaser.Scene {
             grid: this.aGrid
         });
         this.aGrid.placeAtIndex(108, this.gamePad);
-
-        // add health bar
-        this.healthBar = new HealthBar(this);
 
         // camera
         this.cameras.main.fadeFrom(500, 0, 0, 0);
