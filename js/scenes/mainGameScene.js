@@ -12,7 +12,6 @@ class MainGameScene extends Phaser.Scene {
                 "level" : 1,
                 "health" : 3,
                 "gold" : 0,
-                "stars" : 0,
                 "score" : 0
             }                
         }
@@ -24,7 +23,7 @@ class MainGameScene extends Phaser.Scene {
             this.user = Object.assign({}, this.initialData);
         }
         console.log("welcome "+this.user.username+"!\n zone: "+this.user.zone+"\n level: "+this.user.level+
-            "\n health: "+this.user.health+"\n score: "+this.user.score+"\n gold: "+this.user.gold+"\n stars: "+this.user.stars);
+            "\n health: "+this.user.health+"\n score: "+this.user.score+"\n gold: "+this.user.gold);
     }
     preload()
     {
@@ -100,11 +99,7 @@ class MainGameScene extends Phaser.Scene {
         // create stars for shooting
         this.shootingStars = this.physics.add.group();
         this.physics.add.overlap(this.shootingStars, this.zombies, this.zombieCollisionQuizScene, null, this);
-
-        // make collectable stars
-        let starLocations = this.cache.json.get('zone')["levels"][this.user.level]['stars'];
-        this.makeStars(this.blockGrid, starLocations);
-                
+               
         // make coins
         let coinLocations = this.cache.json.get('zone')["levels"][this.user.level]['coins'];
         this.makeCoins(this.blockGrid, coinLocations);
@@ -112,8 +107,6 @@ class MainGameScene extends Phaser.Scene {
         // add level panel
         this.makeLevelPanel(9);
 
-        // add star panel
-        this.starScoreText = this.makePanelItem(2.25, "star", 1/36, 0.32, -0.4, this.user.stars, 1/20);
 
         // add score panel
         this.zombieScoreText = this.makePanelItem(4, "deadZombie", 1/20, 0.4, 0, this.user.score, 1/20);
@@ -213,30 +206,18 @@ class MainGameScene extends Phaser.Scene {
         }
     }
     shootStar(){
-        // shoot star if available
-        if (this.gamePad.shootButton.active == true){
-            let star = this.physics.add.sprite(0, 0, 'star');
-            this.shootingStars.add(star);
-            Align.scaleToGameW(star, 1/16);
-            star.x = this.player.x + 10;
-            star.y = this.player.y;
-            star.setVelocityX(800);
-            star.setGravityY(50);
+        let star = this.physics.add.sprite(0, 0, 'star');
+        this.shootingStars.add(star);
+        Align.scaleToGameW(star, 1/16);
+        star.x = this.player.x + 10;
+        star.y = this.player.y;
+        star.setVelocityX(800);
+        star.setGravityY(50);
 
-            // decrement stars
-            this.user.stars -= 1;
-            this.starScoreText.setText(this.user.stars);
-
-            // disable shoot button if new score is 0
-            if (this.user.stars == 0) {
-                this.gamePad.deactivateShoot();
-            }
-
-            // destroy star after delay
-            this.time.addEvent({ delay: 900, callback: function(){
-                star.destroy();
-            }, callbackScope: this, loop: false });
-        }
+        // destroy star after delay
+        this.time.addEvent({ delay: 900, callback: function(){
+            star.destroy();
+        }, callbackScope: this, loop: false });
     }
     killZombie(zombie){
         if (zombie.active) {
@@ -369,24 +350,6 @@ class MainGameScene extends Phaser.Scene {
         if (this.player.jumping) {
             this.player.jumping = false;
         }
-    }
-    makeStars(grid, starLocations){
-        this.stars = this.physics.add.group();
-        starLocations.forEach(starLocation => {
-            let i = this.blockGrid.getFirstCellInRow(starLocation.row) + starLocation.col;
-            let star = this.physics.add.sprite(0, 0, 'star');
-            this.stars.add(star);
-            grid.placeAtIndex(i, star);
-            Align.scaleToGameW(star, 1/15);
-        });
-        this.physics.add.collider(this.stars, this.platformGroup);
-        this.physics.add.overlap(this.stars, this.player, this.collectStar, null, this);
-    }
-    collectStar(player, star){
-        star.disableBody(true, true);
-        this.user.stars += 1;
-        this.starScoreText.setText(this.user.stars);
-        this.gamePad.activateShoot();
     }
     makeCoins(grid, coinLocations){
         // make coins and add

@@ -12,8 +12,7 @@ class MapScene extends Phaser.Scene {
                 "level" : 1,
                 "health" : 3,
                 "gold" : 0,
-                "score" : 0,
-                "stars" : 0
+                "score" : 0
             };  
         }
         // populate user

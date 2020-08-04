@@ -13,16 +13,12 @@ class GamePad extends UIBlock {
         this.add(this.back);
 
         // shoot button
-        this.shootButton = this.scene.add.image(0, 0, 'shootButtonInactive');
+        this.shootButton = this.scene.add.image(0, 0, 'shootButtonActive');
         this.add(this.shootButton);
         Align.scaleToGameW(this.shootButton, 0.3);
         this.grid.placeAtIndex(10, this.shootButton);
         this.shootButton.setInteractive().on('pointerdown', this.shoot.bind(this));
-        if (this.scene.user.score == 0) {
-            this.deactivateShoot();
-        }else{
-            this.activateShoot();
-        }
+        this.shootButton.setTexture('shootButtonActive');
 
         // jump button
         this.jumpButton = this.scene.add.image(0, 0, 'jumpButton');
@@ -41,13 +37,5 @@ class GamePad extends UIBlock {
     }
     shoot(){
         this.emitter.emit("CONTROL_PRESSED", "SHOOT_REQUEST");
-    }
-    activateShoot(){
-        this.shootButton.active = true;
-        this.shootButton.setTexture('shootButtonActive');
-    }
-    deactivateShoot(){
-        this.shootButton.active = false;
-        this.shootButton.setTexture('shootButtonInactive');
     }
 }
