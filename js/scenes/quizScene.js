@@ -231,13 +231,9 @@ class QuizScene extends Phaser.Scene {
         }
     }
     correctAnswer(){
-        // increment score and set zombie falling off screen
-        this.returnScene.scene.user.score ++;
-        this.returnScene.scene.zombieScoreText.setText(this.returnScene.scene.user.score);
-
-        this.zombie.rotation = 0.6;
-        this.zombie.active = false;
-        this.zombie.setVelocityY(300);
+        // kill zombie
+        this.zombie.collided = true;
+        this.returnScene.scene.killZombie(this.zombie);
 
         // return to scene after short delay
         this.time.delayedCall(600, this.returnToScene.bind(this), [], this);

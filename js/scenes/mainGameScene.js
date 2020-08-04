@@ -52,6 +52,10 @@ class MainGameScene extends Phaser.Scene {
         // add event dispatcher
         this.emitter = EventDispatcher.getInstance();
 
+        // load questions for level
+        this.questions = this.cache.json.get('zone')["questionDeck"];
+        this.questionQueue = new QuestionQueue(this.questions);
+        
         // add background
         this.bg = this.add.image(0, 0, "background").setOrigin(0, 0);
         Align.scaleToGameH(this.bg, 1);
@@ -94,7 +98,7 @@ class MainGameScene extends Phaser.Scene {
 
         // create stars for shooting
         this.shootingStars = this.physics.add.group();
-        this.physics.add.overlap(this.shootingStars, this.zombies, this.killZombie, null, this.zombies);
+        this.physics.add.overlap(this.shootingStars, this.zombies, this.zombieCollisionQuizScene, null, this);
 
         // make collectable stars
         let starLocations = this.cache.json.get('zone')["levels"][this.user.level]['stars'];
@@ -145,30 +149,6 @@ class MainGameScene extends Phaser.Scene {
         // window.scene = this;
         // this.blockGrid.showNumbers(); // for debugging
         // this.aGrid.showNumbers(); // for debugging
-
-        // load questions for level
-        this.questions = this.cache.json.get('zone')["questionDeck"];
-        this.questionQueue = new QuestionQueue(this.questions);
-        // this.questionQueue.printQueue();
-
-        // let playerReponses = {};
-        // this.questionKeys.forEach(key => {
-        //     // console.log(key);
-        //     playerReponses[key] = {
-        //         'shown' : 0,
-        //         'correct' : 0,
-        //         'wrong' : 0,
-        //         'order' : []
-        //     };
-        // });
-        // console.log(playerReponses);
-        // this.player.data.set('playerResponses', playerReponses);
-       
-        // console.log(this.events);
-        // this.events.on('transitionstart', function(fromScene, duration){ 
-        //     console.log('resumed from:');
-        //     console.log(fromScene);
-        // });
 
         // set listeners
         this.setListeners();
@@ -254,23 +234,25 @@ class MainGameScene extends Phaser.Scene {
             }, callbackScope: this, loop: false });
         }
     }
-    killZombie(star, zombie){
-        // remove star and set zombie falling off screen
-        star.destroy();
+    killZombie(zombie){
         if (zombie.active) {
+            // set falling off screen
             zombie.rotation = 0.6;
             zombie.setVelocityY(300);
             zombie.active = false;
 
-            // increment score
-            this.scene.user.score ++;
-            this.scene.zombieScoreText.setText(this.scene.user.score);
+            // increment user score
+            this.incrementZombieScore();
 
             // destroy zombie after delay
-            this.scene.time.addEvent({ delay: 1000, callback: function(){
+            this.time.addEvent({ delay: 1000, callback: function(){
                 zombie.destroy();
             }, callbackScope: this, loop: false });
         }
+    }
+    incrementZombieScore(){
+        this.user.score ++;
+        this.zombieScoreText.setText(this.user.score);
     }
     pause(){
         this.scene.pause();
@@ -530,16 +512,18 @@ class MainGameScene extends Phaser.Scene {
         });
         
     }
-    zombieCollisionQuizScene(player, zombie){
+    zombieCollisionQuizScene(collidedWith, zombie){
 
-        // handle collision once, if zombie hasn't been shot
+        // handle collision if zombie hasn't been killed / bumped into
         if (zombie.collided == false && zombie.active == true) {
-            zombie.collided = true;
+            if (collidedWith.texture.key == 'star') {
+                collidedWith.destroy();
+            }else{
+                zombie.collided = true;
+            }
 
-            // get next question
+            // get next question and launch quiz scene
             let question = this.questionQueue.dequeue();
-
-            // launch quiz scene
             this.scene.pause();
             this.scene.launch('QuizScene', {scene: this.scene, question: question, zombie: zombie});
         }
