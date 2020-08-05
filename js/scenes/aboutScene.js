@@ -24,7 +24,7 @@ class AboutScene extends Phaser.Scene {
             xIndex : 1,
             yIndex : 4,
             xWidth : 16,
-            yWidth : 3,
+            yWidth : 30,
             fontSize : '70px',
             color: 'white',
         };
