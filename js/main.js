@@ -21,7 +21,7 @@ window.onload = function() {
             MenuScene,
             AboutScene,
             NewGameScene,
-            // LoadGameScene, // not yet implemented
+            StoryScene,
             MapScene,
             MainGameScene, 
             PauseScene,

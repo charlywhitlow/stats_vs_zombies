@@ -71,7 +71,7 @@ class NewGameScene extends Phaser.Scene {
             "gold" : 0,
             "score" : 0
         };
-        this.scene.start("MapScene", user);
+        this.scene.start("StoryScene", user);
     }
     addText(grid, text, config){
         // options: xIndex, yIndex, xWidth, yWidth, xPadding, yPadding
