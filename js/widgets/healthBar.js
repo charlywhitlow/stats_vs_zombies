@@ -26,9 +26,9 @@ class HealthBar {
         let lightGrey = 0xDDDDDD;
         let darkGrey = 0x414141;
         let white = 0xffffff;
-        let red = 0xff0000;
-        let green = 0x47C90E; 
-        let orange = 0xFFA500;
+        let red = 0xA32828;
+        let green = 0x30982F; 
+        let orange = 0xD98200;
 
         // bar background
         this.bar.fillStyle(darkGrey);

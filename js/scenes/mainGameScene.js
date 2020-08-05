@@ -40,7 +40,7 @@ class MainGameScene extends Phaser.Scene {
         this.load.image('invisible', 'assets/sprites/invisible.png');
 
         this.load.image("controlBack", "assets/backgrounds/metal.png");
-        this.load.image("jumpButton", "assets/buttons/jump.bmp");
+        this.load.image("jumpButton", "assets/buttons/jump.png");
         this.load.image("shootButtonActive", "assets/buttons/shoot_active.png");
         this.load.image("shootButtonInactive", "assets/buttons/shoot_inactive.png");
         this.load.image("pause", "assets/buttons/pause_icon.png");

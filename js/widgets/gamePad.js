@@ -23,8 +23,8 @@ class GamePad extends UIBlock {
         // jump button
         this.jumpButton = this.scene.add.image(0, 0, 'jumpButton');
         this.add(this.jumpButton);
-        Align.scaleToGameW(this.jumpButton, 0.4);
-        this.grid.placeAtIndex(14.5, this.jumpButton);
+        Align.scaleToGameW(this.jumpButton, 0.45);
+        this.grid.placeAtIndex(14.4, this.jumpButton);
         this.jumpButton.setInteractive().on('pointerdown', this.jump.bind(this));
         
         // stop control panel from scrolling with camera
