@@ -5,18 +5,18 @@ class QuizScene extends Phaser.Scene {
     init(data){
         if (data.scene) {
             this.returnScene = data.scene;
-            this.questionText = data.question.text;
-            this.questionType = data.question.type;
-            this.questionImage = data.question.imageFile;
-            this.questionAnswers = data.question.answers;
+            this.queue = this.returnScene.scene.user.questionQueue;
+            this.question = data.question.question;
+            this.userAnswer = data.question.answer;
             this.zombie = data.zombie;
         }else{
             // testing- q1 text only
             // this.returnScene = this.scene.get('MainGameScene');
-            // this.questionText = '____ is a measure of average variability around the mean, in squared units';
-            // this.questionType = 'textOnly';
-            // this.questionImage = '';
-            // this.questionAnswers = {
+            // this.question = {};
+            // this.question.text = '____ is a measure of average variability around the mean, in squared units';
+            // this.question.type = 'textOnly';
+            // this.question.imageFile = '';
+            // this.question.answers = {
             //     "0" : {
             //         "text" : "Variance",
             //         "correct" : "true" 
@@ -37,10 +37,11 @@ class QuizScene extends Phaser.Scene {
 
             // testing- q3 text + image
             this.returnScene = this.scene.get('MainGameScene');
-            this.questionText = 'This graph is a:';
-            this.questionType = 'image';
-            this.questionImage = 'assets/questionImages/Level1/3_boxplot.png';
-            this.questionAnswers = {
+            this.question = {};
+            this.question.questiontext = 'This graph is a:';
+            this.question.type = 'image';
+            this.question.imageFile = 'assets/questionImages/Level1/3_boxplot.png';
+            this.question.answers = {
                 "0" : {
                     "text" : "Box plot",
                     "correct" : "true" 
@@ -62,8 +63,8 @@ class QuizScene extends Phaser.Scene {
         }
     }
     preload(){
-        if (this.questionImage != '') {
-            this.load.image('questionImage', this.questionImage);            
+        if (this.question.imageFile != '') {
+            this.load.image('questionImage', this.question.imageFile);            
         }
     }
     create() {
@@ -79,12 +80,11 @@ class QuizScene extends Phaser.Scene {
         this.box = this.boxGrid.drawBox(1, this.y, 16, 24, 0xFFFFFF);
 
         // add question text
-        let questionConfig = {
-            type: this.questionType,
-            text: this.questionText,
-            image: this.questionImage,
-        }
-        this.makeQuestionText(questionConfig);
+        this.makeQuestionText({
+            type: this.question.type,
+            text: this.question.text,
+            image: this.question.imageFile,
+        });
 
         // add answer buttons
         this.makeAnswerButtons();
@@ -146,42 +146,38 @@ class QuizScene extends Phaser.Scene {
     makeAnswerButtons(){
         // add answer buttons (multiple choice a,b,c,d, randomise order)
         let answerOrder = this.shuffleArray([0, 1, 2, 3]);
-        let aConfig = {
-            text: 'a) '+this.questionAnswers[answerOrder[0]].text,
+        this.a = this.makeAnswerButton({
+            text: 'a) '+this.question.answers[answerOrder[0]].text,
             xIndex: 2,
             yIndex: this.y+15,
             xWidth: 6.5,
             yWidth: 3.5,
-            correct: this.questionAnswers[answerOrder[0]].correct
-        }
-        let bConfig = {
-            text: 'b) '+this.questionAnswers[answerOrder[1]].text,
+            correct: this.question.answers[answerOrder[0]].correct
+        });
+        this.b = this.makeAnswerButton({
+            text: 'b) '+this.question.answers[answerOrder[1]].text,
             xIndex: 9.5,
             yIndex: this.y+15,
             xWidth: 6.5,
             yWidth: 3.5,
-            correct: this.questionAnswers[answerOrder[1]].correct
-        }
-        let cConfig = {
-            text: 'c) '+this.questionAnswers[answerOrder[2]].text,
+            correct: this.question.answers[answerOrder[1]].correct
+        });
+        this.c = this.makeAnswerButton({
+            text: 'c) '+this.question.answers[answerOrder[2]].text,
             xIndex: 2,
             yIndex: this.y+19.5,
             xWidth: 6.5,
             yWidth: 3.5,
-            correct: this.questionAnswers[answerOrder[2]].correct
-        }
-        let dConfig = {
-            text: 'd) '+this.questionAnswers[answerOrder[3]].text,
+            correct: this.question.answers[answerOrder[2]].correct
+        });
+        this.d = this.makeAnswerButton({
+            text: 'd) '+this.question.answers[answerOrder[3]].text,
             xIndex: 9.5,
             yIndex: this.y+19.5,
             xWidth: 6.5,
             yWidth: 3.5,
-            correct: this.questionAnswers[answerOrder[3]].correct
-        }
-        this.a = this.makeAnswerButton(aConfig);
-        this.b = this.makeAnswerButton(bConfig);
-        this.c = this.makeAnswerButton(cConfig);
-        this.d = this.makeAnswerButton(dConfig);
+            correct: this.question.answers[answerOrder[3]].correct
+        });
     }
     makeAnswerButton(config){
         // set button padding
@@ -232,6 +228,13 @@ class QuizScene extends Phaser.Scene {
         }
     }
     correctAnswer(){
+        // update answer
+        this.userAnswer[0]++;
+        this.userAnswer[1]++;
+
+        // re-add to end of question queue
+        this.queue.enqueue(this.question, this.userAnswer);
+
         // kill zombie
         this.zombie.collided = true;
         this.returnScene.scene.killZombie(this.zombie);
@@ -240,6 +243,12 @@ class QuizScene extends Phaser.Scene {
         this.time.delayedCall(600, this.returnToScene.bind(this), [], this);
     }
     wrongAnswer(){
+        // update answer
+        this.userAnswer[0]++;
+
+        // re-add to middle of question queue
+        this.queue.enqueue(this.question, this.userAnswer, this.queue.middle);
+
         // update health
         this.returnScene.scene.user.health--;
         this.returnScene.scene.healthBar.draw();

@@ -4,8 +4,9 @@ class NewGameScene extends Phaser.Scene {
     }
     preload(){
         this.load.image('menuBackground', 'assets/backgrounds/titleBackground.png');
-        this.load.image("back", 'assets/buttons/back.png');
+        this.load.image('back', 'assets/buttons/back.png');
         this.load.html('createUserForm', 'assets/html/newUser.html');
+        this.load.json('zone', 'assets/data/zone1.json');
     }
     create() {
         // add title background
@@ -40,12 +41,9 @@ class NewGameScene extends Phaser.Scene {
         this.form.on('click', function (event) {
             if (event.target.name === 'createButton'){
                 let inputUsername = this.getChildByName('username').value.trim();
-                // let inputPassword = this.getChildByName('password').value.trim();
-                // launch new game if username not blank
                 if (inputUsername !== ''){
                     this.scene.launchNewGame(inputUsername);
-                }
-                else{
+                }else{
                     window.alert('Please enter a username to continue');
                 }
             }
@@ -71,6 +69,8 @@ class NewGameScene extends Phaser.Scene {
             "gold" : 0,
             "score" : 0
         };
+        let questionDeck = this.cache.json.get('zone')["questionDeck"];
+        user.questionQueue = new QuestionQueue(questionDeck);
         this.scene.start("StoryScene", user);
     }
     addText(grid, text, config){

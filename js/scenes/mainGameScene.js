@@ -13,17 +13,20 @@ class MainGameScene extends Phaser.Scene {
                 "health" : 3,
                 "gold" : 0,
                 "score" : 0
-            }                
+            }
         }
-        // set user data
-        if (!this.restarted) {
+        // reset user data on level restart
+        if (this.restarted) {
+            this.user = Object.assign({}, this.initialData);
+            console.log("restarting level... good luck "+this.user.username+"!\n zone: "+this.user.zone+"\n level: "+this.user.level+
+            "\n health: "+this.user.health+"\n score: "+this.user.score+"\n gold: "+this.user.gold);
+        }else{
+            // set user data
             this.user = data;
             this.initialData = Object.assign({}, this.user);
-        }else{
-            this.user = Object.assign({}, this.initialData);
-        }
-        console.log("welcome "+this.user.username+"!\n zone: "+this.user.zone+"\n level: "+this.user.level+
+            console.log("welcome "+this.user.username+"!\n zone: "+this.user.zone+"\n level: "+this.user.level+
             "\n health: "+this.user.health+"\n score: "+this.user.score+"\n gold: "+this.user.gold);
+        }
     }
     preload()
     {
@@ -52,9 +55,12 @@ class MainGameScene extends Phaser.Scene {
         // add event dispatcher
         this.emitter = EventDispatcher.getInstance();
 
-        // load questions for level
-        this.questions = this.cache.json.get('zone')["questionDeck"];
-        this.questionQueue = new QuestionQueue(this.questions);
+        // create question queue (for testing only- created in new/load game)
+        if (!this.user.questionQueue) {
+            console.log('create question/answer queue (testing only)');
+            let questionDeck = this.cache.json.get('zone')["questionDeck"];
+            this.user.questionQueue = new QuestionQueue(questionDeck);
+        }
         
         // add background
         this.bg = this.add.image(0, 0, "background").setOrigin(0, 0);
@@ -476,7 +482,6 @@ class MainGameScene extends Phaser.Scene {
             frameRate: 8,
             repeat: -1
         });
-        
     }
     zombieCollisionQuizScene(collidedWith, zombie){
 
@@ -487,11 +492,10 @@ class MainGameScene extends Phaser.Scene {
             }else{
                 zombie.collided = true;
             }
-
             // get next question and launch quiz scene
-            let question = this.questionQueue.dequeue();
+            let nextQuestion = this.user.questionQueue.dequeue();
             this.scene.pause();
-            this.scene.launch('QuizScene', {scene: this.scene, question: question, zombie: zombie});
+            this.scene.launch('QuizScene', {scene: this.scene, question: nextQuestion, zombie: zombie});
         }
     }
     gameOver(){

@@ -27,7 +27,7 @@ class MapScene extends Phaser.Scene {
         this.load.image('levelBossClosed', 'assets/game_map/level_boss_closed.png');
         this.load.image('levelBossOpen', 'assets/game_map/level_boss_open.png');
         this.load.image('arrow', 'assets/game_map/arrow.png');
-        this.load.image("back", 'assets/buttons/back.png');
+        this.load.image('back', 'assets/buttons/back.png');
 
         this.load.image('pipeHorizontal', 'assets/game_map/pipe_horizontal.png');
         this.load.image('pipeVertical', 'assets/game_map/pipe_vertical.png');
@@ -50,18 +50,14 @@ class MapScene extends Phaser.Scene {
         this.grid.placeAtIndex(135, this.mapPanel);
         Align.centerH(this.mapPanel);
         Align.stretchToGameH(this.mapPanel, 0.62);
-        this.mapPanel.setInteractive().on('pointerup', function () {
-            // increment health and start level
-            this.user.health < 3 ? this.user.health ++ : this.user.health;
-            this.scene.start("MainGameScene", this.user);
-        }, this);
+        this.mapPanel.setInteractive().on('pointerup', this.launchGame, this);
 
         // build map
         this.mapJSON = this.cache.json.get('zone')["map"];
         this.buildMap(this.mapJSON);
 
         // add zone text
-        let zoneText = this.addText(this.grid, "Zone "+this.user.zone, {
+        this.addText(this.grid, "Zone "+this.user.zone, {
             xIndex : 1,
             yIndex : 3,
             xWidth : 16,
@@ -70,10 +66,9 @@ class MapScene extends Phaser.Scene {
             fontStyle : 'bold',
             color: 'red',
         });
-        Align.centerH(zoneText);
 
         // add level text
-        let levelText = this.addText(this.grid, "Level "+this.user.level, {
+        this.addText(this.grid, "Level "+this.user.level, {
             xIndex : 1,
             yIndex : 5,
             xWidth : 16,
@@ -81,10 +76,9 @@ class MapScene extends Phaser.Scene {
             fontSize : '70px',
             color: 'red',
         });
-        Align.centerH(levelText);
 
         // tap map to start text
-        let startText = this.addText(this.grid, "Tap map to start", {
+        this.addText(this.grid, "Tap map to start", {
             xIndex : 1,
             yIndex : 28,
             xWidth : 16,
@@ -92,7 +86,6 @@ class MapScene extends Phaser.Scene {
             fontSize : '70px',
             color: 'red',            
         });
-        Align.centerH(startText);
 
         // add back button
         this.backButton = new BackButton({
@@ -103,7 +96,6 @@ class MapScene extends Phaser.Scene {
         
         // fade in
         this.cameras.main.fadeFrom(500, 0, 0, 0);
-
     }
     buildMap(mapJSON){
         for (const i in mapJSON.levels) {
@@ -146,6 +138,18 @@ class MapScene extends Phaser.Scene {
             Align.scaleToGameW(pipe, 0.11);
             this.grid.placeAt(i['x'], i['y'], pipe);
         });
+    }
+    launchGame(){
+        // create question queue (for testing only- created in new/load game)
+        if (!this.user.hasOwnProperty('questionQueue')){
+            console.log('create question/answer queue (TESTING ONLY)');
+            let questionDeck = this.cache.json.get('zone')["questionDeck"];
+            this.user.questionQueue = new QuestionQueue(questionDeck);
+        }
+        // increment health
+        this.user.health < 3 ? this.user.health ++ : this.user.health;
+        // launch game
+        this.scene.start("MainGameScene", this.user);
     }
     addText(grid, text, config){
         // options: xIndex, yIndex, xWidth, yWidth, xPadding, yPadding
