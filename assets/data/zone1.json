@@ -2336,7 +2336,122 @@
         }
     },
     "questionDeck": {
+        "0" : {
+            "type" : "textOnly",
+            "text" : "The most frequent value in a list of numbers is called the:",
+            "imageFile" : "",
+            "answers" : {
+                "0" : {
+                    "text" : "Mode",
+                    "correct" : "true" 
+                },
+                "1" : {
+                    "text" : "Mean",
+                    "correct" : "false" 
+                },
+                "2" : {
+                    "text" : "Median",
+                    "correct" : "false" 
+                },
+                "3" : {
+                    "text" : "Range",
+                    "correct" : "false" 
+                }
+            }
+        },
         "1" : {
+            "type" : "textOnly",
+            "text" : "The middle value in an ordered list of values is called the:",
+            "imageFile" : "",
+            "answers" : {
+                "0" : {
+                    "text" : "Median",
+                    "correct" : "true" 
+                },
+                "1" : {
+                    "text" : "Mean",
+                    "correct" : "false" 
+                },
+                "2" : {
+                    "text" : "Mode",
+                    "correct" : "false" 
+                },
+                "3" : {
+                    "text" : "Range",
+                    "correct" : "false" 
+                }
+            }
+        },
+        "2" : {
+            "type" : "textOnly",
+            "text" : "The sum of all numbers in a list divided by the number of numbers is called the:",
+            "imageFile" : "",
+            "answers" : {
+                "0" : {
+                    "text" : "Mean",
+                    "correct" : "true" 
+                },
+                "1" : {
+                    "text" : "Mode",
+                    "correct" : "false" 
+                },
+                "2" : {
+                    "text" : "Median",
+                    "correct" : "false" 
+                },
+                "3" : {
+                    "text" : "Range",
+                    "correct" : "false" 
+                }
+            }
+        },
+        "3" : {
+            "type" : "textOnly",
+            "text" : "The difference between the biggest and the smallest number is called the:",
+            "imageFile" : "",
+            "answers" : {
+                "0" : {
+                    "text" : "Range",
+                    "correct" : "true" 
+                },
+                "1" : {
+                    "text" : "Mode",
+                    "correct" : "false" 
+                },
+                "2" : {
+                    "text" : "Median",
+                    "correct" : "false" 
+                },
+                "3" : {
+                    "text" : "Mean",
+                    "correct" : "false" 
+                }
+            }
+        },
+        "4" : {
+            "type" : "image",
+            "text" : "What type of graph is this?",
+            "imageFile" : "assets/questionImages/Level1/3_boxplot.png",
+            "answers" : {
+                "0" : {
+                    "text" : "Box plot",
+                    "correct" : "true" 
+                },
+                "1" : {
+                    "text" : "Histogram",
+                    "correct" : "false" 
+                },
+                "2" : {
+                    "text" : "Scatterplot",
+                    "correct" : "false" 
+                },
+                "3" : {
+                    "text" : "Stem and Leaf Plot",
+                    "correct" : "false" 
+                }
+            }
+        },
+        "5" : {
             "type" : "textOnly",
             "text" : "____ is a measure of average variability around the mean, in squared units",
             "imageFile" : "",
@@ -2359,8 +2474,7 @@
                 }
             }
         },
-
-        "2" : {
+        "6" : {
             "type" : "textOnly",
             "text" : "In a normal ditribution: 95% of observations fall within ___ standard deviations of the mean",
             "imageFile" : "",
@@ -2382,32 +2496,7 @@
                     "correct" : "false" 
                 }
             }
-        },
-
-        "3" : {
-            "type" : "image",
-            "text" : "This graph is a:",
-            "imageFile" : "assets/questionImages/Level1/3_boxplot.png",
-            "answers" : {
-                "0" : {
-                    "text" : "Box plot",
-                    "correct" : "true" 
-                },
-                "1" : {
-                    "text" : "Histogram",
-                    "correct" : "false" 
-                },
-                "2" : {
-                    "text" : "Scatterplot",
-                    "correct" : "false" 
-                },
-                "3" : {
-                    "text" : "Stem and Leaf Plot",
-                    "correct" : "false" 
-                }
-            }
         }
-
     },
     "map" : {
         "levels" : {
