@@ -10,6 +10,17 @@ router.get('/status', (req, res, next) => {
   res.json({ 'status': 'ok' });
 });
 
+// check-username
+router.post('/check-username', asyncMiddleware( async (req, res, next) => {
+    const { username } = req.body;
+    const user = await UserModel.findOne({ username });
+    if (!user) {
+        res.status(200).json({ 'status': 'ok' });        
+    }else{
+        res.status(401).json({ 'message': 'username taken' });
+    }
+}));
+
 // signup
 router.post('/signup', asyncMiddleware( async (req, res, next) => {
     const { username, email, password } = req.body;

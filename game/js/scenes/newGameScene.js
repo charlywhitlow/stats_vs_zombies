@@ -5,7 +5,7 @@ class NewGameScene extends Phaser.Scene {
     preload(){
         this.load.image('menuBackground', 'assets/backgrounds/titleBackground.png');
         this.load.image('back', 'assets/buttons/back.png');
-        this.load.html('createUserForm', 'assets/html/newUser.html');
+        this.load.html('usernameForm', 'assets/html/usernameForm.html');
         this.load.json('zone', 'assets/data/zone1.json');
     }
     create() {
@@ -33,16 +33,30 @@ class NewGameScene extends Phaser.Scene {
         Align.centerH(nameText);
 
         // add html form
-        this.form = this.add.dom(0, 0).createFromCache('createUserForm');
+        this.form = this.add.dom(0, 0).createFromCache('usernameForm');
         let index = this.grid.getFirstCellInRow(14);
         this.grid.placeAtIndex(index, this.form);
         Align.centerH(this.form);
+        
+        // handle form input
         this.form.addListener('click');
         this.form.on('click', function (event) {
-            if (event.target.name === 'createButton'){
+            if (event.target.name === 'goButton'){
+                let scene = this.scene;
                 let inputUsername = this.getChildByName('username').value.trim();
                 if (inputUsername !== ''){
-                    this.scene.launchNewGame(inputUsername);
+                    // check if username already taken
+                    $.ajax({
+                        type: 'POST',
+                        url: '/check-username',
+                        data : { "username": inputUsername },
+                        success: function () {
+                            scene.launchNewGame(inputUsername);
+                        },
+                        error: function (xhr) {                                                        
+                            window.alert('Username taken, please try again');
+                        }
+                    });
                 }else{
                     window.alert('Please enter a username to continue');
                 }

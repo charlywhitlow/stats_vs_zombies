@@ -16,6 +16,13 @@ ________________
     http://localhost:3000/scores \
     -H 'Content-Type: application/json'
 
+### check-username
+
+    curl -X POST \
+    http://localhost:3000/check-username \
+    -H 'Content-Type: application/json' \
+    -d '{ "username": "john" }'
+
 ### signup
 
     curl -X POST \
