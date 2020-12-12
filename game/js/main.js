@@ -22,6 +22,7 @@ window.onload = function() {
             AboutScene,
             NewGameScene,
             LoadGameScene,
+            SaveGameScene,
             StoryScene,
             MapScene,
             MainGameScene, 

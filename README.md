@@ -42,3 +42,17 @@ ________________
     http://localhost:3000/login \
     -H 'Content-Type: application/json' \
     -d '{ "username": "john@test.com", "password": "1234" }'
+
+### save-game
+    curl -X POST \
+    http://localhost:3000/save-game \
+    -H 'Content-Type: application/json' \
+    -d '{ 
+        "username": "charly", 
+        "zone": "3", 
+        "level": "10", 
+        "health": "2", 
+        "score": "12", 
+        "gold": "42"
+    }'
+

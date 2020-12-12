@@ -30,6 +30,16 @@ router.post('/signup', asyncMiddleware( async (req, res, next) => {
     res.status(200).json({ 'status': 'ok' });
 }));
 
+// save-game
+router.post('/save-game', asyncMiddleware( async (req, res, next) => {
+    const { username, zone, level, health, score, gold } = req.body;
+    await UserModel.updateOne( 
+        { username }, 
+        { zone, level, health, score, gold }
+    );
+    res.status(200).json({ 'status': 'ok' });
+}));
+
 // login
 router.post('/login', asyncMiddleware(async (req, res, next) => {
     const { username, password } = req.body;

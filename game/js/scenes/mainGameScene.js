@@ -512,44 +512,140 @@ class MainGameScene extends Phaser.Scene {
         console.log('level complete!')
         this.restarted = false; // to carry user values to next level
 
-        // remove game end and stop following character
+        // remove game end and floor, and stop following character
         this.gameEnd.children.entries.forEach(element => {
+            element.disableBody();
+        });
+        this.gameFloor.children.entries.forEach(element => {
             element.disableBody();
         });
         this.cameras.main.stopFollow();
 
-        // add level complete text
-        this.levelCompleteText = this.make.text({
-            x: 0,
-            y: 0,
-            padding: { x: 32, y: 16 },
-            text: 'Level Complete',
-            style: {
-                fontSize: '20px',
-                fontFamily: 'Arial',
-                color: 'red',
-                align: 'center',
-            },
-            add: true
-        });
-        Align.scaleToGameW(this.levelCompleteText, .8);
-        let endCell = (3*this.blockGrid.cols) + this.gameEndX - (this.aGrid.cols/2);
-        this.blockGrid.placeAtIndex(endCell, this.levelCompleteText);
+        // destroy emitter instance
+        this.emitter.destroy();
+        
+        // fade out to black
+        this.cameras.main.fade(1500, 0, 0, 0);
+        this.user.level ++;
 
-        // short wait then switch back to map scene
-        this.time.addEvent({ delay: 1500, callback: function(){
+        this.cameras.main.on('camerafadeoutcomplete', function () {
+            this.cameras.main.fadeFrom(500, 0, 0, 0);
 
-            // fade out to black
-            this.cameras.main.fade(800, 0, 0, 0);
-            this.user.level ++;
+            // add level complete text
+            this.levelCompleteText = this.make.text({
+                x: 0,
+                y: 0,
+                padding: { x: 32, y: 16 },
+                text: 'Level Complete',
+                style: {
+                    fontSize: '38px',
+                    fontFamily: 'Arial',
+                    color: 'red',
+                    align: 'center',
+                },
+                add: true
+            });
+            Align.scaleToGameW(this.levelCompleteText, .8);
+            this.blockGrid.placeAtIndex(((3*this.blockGrid.cols) + this.gameEndX - (this.aGrid.cols/2)), this.levelCompleteText);
+    
+            // save button
+            this.saveButton = this.make.text({
+                x: 0,
+                y: 0,
+                padding: { x: 50, y: 10 },
+                text: 'Save Game',
+                style: {
+                    fontSize: '38px',
+                    fontFamily: 'Arial',
+                    color: 'black',
+                    align: 'center',
+                    backgroundColor: 'grey',
+                },
+                add: true
+            });
+            Align.scaleToGameW(this.saveButton, .8);
+            this.blockGrid.placeAtIndex(((6*this.blockGrid.cols) + this.gameEndX - (this.aGrid.cols/2)), this.saveButton);
+            this.saveButton.setInteractive().on('pointerdown', this.saveGame.bind(this));
 
-            // destroy emitter instance
-            this.emitter.destroy();
+            // continue button
+            this.continueButton = this.make.text({
+                x: 0,
+                y: 0,
+                padding: { x: 20, y: 10 },
+                text: 'Contine without saving',
+                style: {
+                    fontSize: '28px',
+                    fontFamily: 'Arial',
+                    color: 'black',
+                    align: 'center',
+                    backgroundColor: 'grey',
+                },
+                add: true
+            });
+            Align.scaleToGameW(this.continueButton, .8);
+            this.blockGrid.placeAtIndex(((8*this.blockGrid.cols) + this.gameEndX - (this.aGrid.cols/2)), this.continueButton);
+            this.continueButton.setInteractive().on('pointerdown', this.continueWithoutSaving.bind(this));
 
-            // launch map scene
-            this.cameras.main.on('camerafadeoutcomplete', function () {
-                this.scene.start('MapScene', this.user);
-            }, this);
-        }, callbackScope: this, loop: false });
+        }, this);
     }
+    saveGame(){
+        console.log('save game')
+        this.scene.start('SaveGameScene', this.user);
+    }
+    continueWithoutSaving(){
+        console.log('continue without saving')
+        this.scene.start('MapScene', this.user);
+    }
+
+    addText(grid, text, config){
+        // options: xIndex, yIndex, xWidth, yWidth, xPadding, yPadding
+        // fontFamily, fontSize, fontStyle, color, align, backgroundColor
+
+        // defaults
+        if (!config.xIndex) {
+            config.xIndex = 1;
+        }
+        if (!config.yIndex) {
+            config.yIndex = 1;            
+        }
+        if (!config.xPadding) {
+            config.xPadding = 25;
+        }
+        if (!config.yPadding) {
+            config.yPadding = 25;            
+        }
+        if (!config.xWidth) {
+            config.xWidth = 8;
+        }
+        if (!config.yWidth) {
+            config.yWidth = 3;
+        }
+
+        // add question text
+        let questionText = this.make.text({
+            x: config.xIndex * grid.cellWidth,
+            y: config.yIndex * grid.cellHeight,
+            padding: { x: config.xPadding, y: config.yPadding },
+            text: text,
+            style: {
+                fontFamily: (config.fontFamily ? config.fontFamily : 'Arial'),
+                fontSize: (config.fontSize ? config.fontSize : '70px'),
+                color: (config.color ? config.color : 'black'),
+                align: (config.align ? config.align : 'center'),
+                fixedWidth: config.xWidth * grid.cellWidth,
+                fixedHeight: config.yWidth * grid.cellHeight,
+                wordWrap: {
+                    width: (config.xWidth * grid.cellWidth)-(config.xPadding*2),
+                },
+            },
+        });
+        if (config.backgroundColor) {
+            questionText.setBackgroundColor(config.backgroundColor);
+        }
+        if (config.fontStyle) {
+            questionText.setFontStyle(config.fontStyle);
+        }
+        return questionText;        
+    }
+
 }
