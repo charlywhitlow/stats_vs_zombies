@@ -18,4 +18,35 @@ router.post('/signup', asyncMiddleware( async (req, res, next) => {
     });
     res.status(200).json({ 'status': 'ok' });
 }));
+
+// login
+router.post('/login', asyncMiddleware(async (req, res, next) => {
+    const { username, password } = req.body;
+
+    // check username and email
+    let user = await UserModel.findOne({ username : username });
+    if (!user) {
+        user = await UserModel.findOne({ email : username });
+    }
+    if (!user) {
+      res.status(401).json({ 'message': 'User not found' });
+      return;
+    }
+    const validate = await user.isValidPassword(password);
+    if (!validate) {
+      res.status(401).json({ 'message': 'Incorrect password' });
+      return;
+    }
+    res.status(200).json({ 
+        'status': 'ok',
+        'user' : {
+            'username' : user.username,
+            'zone' : user.zone,
+            'level' : user.level,
+            'health' : user.health,
+            'score' : user.score,
+            'gold' : user.gold
+        }
+    });
+}));
 module.exports = router;

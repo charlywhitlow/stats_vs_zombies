@@ -23,3 +23,15 @@ ________________
     -H 'Content-Type: application/json' \
     -d '{ "username": "john", "email": "john@test.com", "password": "1234" }'
 
+### login (with username)
+    curl -X POST \
+    http://localhost:3000/login \
+    -H 'Content-Type: application/json' \
+    -d '{ "username": "john", "password": "1234" }'
+
+### login (with email)
+
+    curl -X POST \
+    http://localhost:3000/login \
+    -H 'Content-Type: application/json' \
+    -d '{ "username": "john@test.com", "password": "1234" }'
