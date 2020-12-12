@@ -2,3 +2,4 @@ TODO.txt
 *.idea
 phaser.js
 node_modules
+.env
