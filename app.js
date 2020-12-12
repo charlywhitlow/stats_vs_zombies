@@ -16,10 +16,8 @@ mongoose.connection.on('connected', function () {
   console.log('Connected to mongo');
 });
 
-
 // create an instance of an express app
 const app = express();
-const router = express.Router();
 
 // serve game
 app.use(express.static(__dirname + '/game'));
@@ -31,11 +29,9 @@ app.get('/', function (req, res) {
 app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()); // parse application/json
 
-// status
-app.get('/status', (req, res, next) => {
-    res.status(200);
-    res.json({ 'status': 'ok' });
-});
+// app routes
+const routes = require('./api/main');
+app.use('/', routes);
 
 // catch all other routes
 app.use((req, res, next) => {
