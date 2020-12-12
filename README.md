@@ -56,3 +56,19 @@ ________________
         "gold": "42"
     }'
 
+________________
+## Dev Setup
+
+1. Create .env file
+    * copy config/env_template into root dir and rename .env
+    * populate with mongodb URI and any other fields
+
+2. Install program
+    * npm install
+
+3. Run start script to start app using nodemon (restart-on-save)
+    * npm run devStart
+
+4. View app in browser (default port 3000)
+    * localhost:[port]
+________________
