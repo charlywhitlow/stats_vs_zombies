@@ -94,12 +94,10 @@ class MenuScene extends Phaser.Scene {
         this.scene.start("NewGameScene");
     }
     loadGame(){
-        console.log('load game');
-        // load player from database and pass to map scene:
-        // this.scene.start("MapScene", user);
+        this.scene.start("LoadGameScene");
     }
     leaderboard(){
-        console.log('leaderboard');
+        window.alert('This feature has not yet been implemented');
     }
     about(){
         this.scene.start("AboutScene");
