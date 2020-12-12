@@ -4,7 +4,7 @@ class IntroScene extends Phaser.Scene {
     }
     preload() {
         this.load.image('introBackground', 'assets/backgrounds/introBackground.png');
-        this.load.image('QR', 'assets/QRcode.png');
+        this.load.image('QR', 'assets/qr-code-heroku.svg');
     }
     create() {
         // add title background
@@ -22,7 +22,7 @@ class IntroScene extends Phaser.Scene {
         });
 
         this.introText = this.createTextBelow(this.titleText, 10, .85,
-            'This game was created as part of a final year university project to teach statistical concepts in a fun and accessible way.', {
+            'Welcome to Stats Vs Zombies! This game was created as part of a final year university project to teach statistical concepts in a fun and accessible way.', {
                 paddingX : 10,
                 paddingY : 10,
                 fontSize : '20px',
@@ -34,7 +34,7 @@ class IntroScene extends Phaser.Scene {
         );
 
         this.chromeText = this.createTextBelow(this.introText, 0, .85,
-            'This project is a work in progress and currently works best in Chrome.', {
+            'The game a work in progress and currently runs best in Chrome.', {
                 paddingX : 10,
                 paddingY : 10,
                 fontSize : '20px',
@@ -72,13 +72,13 @@ class IntroScene extends Phaser.Scene {
             }
         );
 
-        this.qrImage = this.createImage(this.shareText, 0, 'QR', 0.35);
+        this.qrImage = this.createImage(this.shareText, 0, 'QR', 0.4);
 
-        this.shareURL = this.createTextBelow(this.qrImage, 0, .75,
-            'users.cs.cf.ac.uk/WhitlowC/ stats_vs_zombies', {
+        this.shareURL = this.createTextBelow(this.qrImage, 0, .85,
+            'stats-vs-zombies.herokuapp.com', {
                 paddingX : 10,
                 paddingY : 5,
-                fontSize : '20px',
+                fontSize : '30px',
                 fontFamily : 'Arial',
                 color : 'red',
                 align : 'center',
@@ -87,14 +87,14 @@ class IntroScene extends Phaser.Scene {
             }
         );
         this.shareURL.setInteractive().on('pointerup', () => {
-            window.open('https://users.cs.cf.ac.uk/WhitlowC/stats_vs_zombies/', '_blank');
+            window.open('https://stats-vs-zombies.herokuapp.com', '_blank');
         });
 
-        this.githubText = this.createTextBelow(this.shareURL, 20, .5,
-            'Source code available at:', {
+        this.githubText = this.createTextBelow(this.shareURL, 25, .4,
+            'Source code at:', {
                 paddingX : 10,
                 paddingY : 10,
-                fontSize : '20px',
+                fontSize : '30px',
                 fontFamily : 'Arial',
                 color : 'black',
                 align : 'center',
@@ -106,7 +106,7 @@ class IntroScene extends Phaser.Scene {
             'github.com/charlywhitlow/stats_vs_zombies', {
                 paddingX : 10,
                 paddingY : 0,
-                fontSize : '20px',
+                fontSize : '30px',
                 fontFamily : 'Arial',
                 fontStyle: 'bold',
                 color : 'red',
