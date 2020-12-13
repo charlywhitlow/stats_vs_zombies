@@ -57,7 +57,7 @@ class MapScene extends Phaser.Scene {
         this.buildMap(this.mapJSON);
 
         // add zone text
-        this.addText(this.grid, "Zone "+this.user.zone, {
+        GameText.addText(this, this.grid, "Zone "+this.user.zone, {
             xIndex : 1,
             yIndex : 3,
             xWidth : 16,
@@ -68,7 +68,7 @@ class MapScene extends Phaser.Scene {
         });
 
         // add level text
-        this.addText(this.grid, "Level "+this.user.level, {
+        GameText.addText(this, this.grid, "Level "+this.user.level, {
             xIndex : 1,
             yIndex : 5,
             xWidth : 16,
@@ -78,7 +78,7 @@ class MapScene extends Phaser.Scene {
         });
 
         // tap map to start text
-        this.addText(this.grid, "Tap map to start", {
+        GameText.addText(this, this.grid, "Tap map to start", {
             xIndex : 1,
             yIndex : 28,
             xWidth : 16,
@@ -150,55 +150,5 @@ class MapScene extends Phaser.Scene {
         this.user.health < 3 ? this.user.health ++ : this.user.health;
         // launch game
         this.scene.start("MainGameScene", this.user);
-    }
-    addText(grid, text, config){
-        // options: xIndex, yIndex, xWidth, yWidth, xPadding, yPadding
-        // fontFamily, fontSize, fontStyle, color, align, backgroundColor
-
-        // defaults
-        if (!config.xIndex) {
-            config.xIndex = 1;
-        }
-        if (!config.yIndex) {
-            config.yIndex = 1;            
-        }
-        if (!config.xPadding) {
-            config.xPadding = 25;
-        }
-        if (!config.yPadding) {
-            config.yPadding = 25;            
-        }
-        if (!config.xWidth) {
-            config.xWidth = 8;
-        }
-        if (!config.yWidth) {
-            config.yWidth = 3;
-        }
-
-        // add text
-        let addText = this.make.text({
-            x: config.xIndex * grid.cellWidth,
-            y: config.yIndex * grid.cellHeight,
-            padding: { x: config.xPadding, y: config.yPadding },
-            text: text,
-            style: {
-                fontFamily: (config.fontFamily ? config.fontFamily : 'Arial'),
-                fontSize: (config.fontSize ? config.fontSize : '70px'),
-                color: (config.color ? config.color : 'black'),
-                align: (config.align ? config.align : 'center'),
-                fixedWidth: config.xWidth * grid.cellWidth,
-                fixedHeight: config.yWidth * grid.cellHeight,
-                wordWrap: {
-                    width: (config.xWidth * grid.cellWidth)-(config.xPadding*2),
-                },
-            },
-        });
-        if (config.backgroundColor) {
-            addText.setBackgroundColor(config.backgroundColor);
-        }
-        if (config.fontStyle) {
-            addText.setFontStyle(config.fontStyle);
-        }
-        return addText;        
     }
 }

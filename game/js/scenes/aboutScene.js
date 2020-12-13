@@ -28,7 +28,7 @@ class AboutScene extends Phaser.Scene {
             fontSize : '70px',
             color: 'white',
         };
-        let aboutText = this.addText(this.grid, "About", aboutTextConfig);
+        let aboutText = GameText.addText(this, this.grid, "About", aboutTextConfig);
         Align.centerH(aboutText);
 
         // p1
@@ -40,7 +40,7 @@ class AboutScene extends Phaser.Scene {
             fontSize : '50px',
             color: 'white',
         };
-        let p1 = this.addText(this.grid, "This web app is a prototype for a mobile gaming platform to teach core statistical concepts in an accesible way, created as part of a final year university project.", p1TextConfig);
+        let p1 = GameText.addText(this, this.grid, "This web app is a prototype for a mobile gaming platform to teach core statistical concepts in an accesible way, created as part of a final year university project.", p1TextConfig);
         Align.centerH(p1);
 
         // add back button
@@ -162,57 +162,5 @@ class AboutScene extends Phaser.Scene {
         this.github.setInteractive().on('pointerup', () => {
             window.open('https://github.com/charlywhitlow/stats_vs_zombies', '_blank');
         });
-    }
-
-
-    addText(grid, text, config){
-        // options: xIndex, yIndex, xWidth, yWidth, xPadding, yPadding
-        // fontFamily, fontSize, fontStyle, color, align, backgroundColor
-
-        // defaults
-        if (!config.xIndex) {
-            config.xIndex = 1;
-        }
-        if (!config.yIndex) {
-            config.yIndex = 1;            
-        }
-        if (!config.xPadding) {
-            config.xPadding = 25;
-        }
-        if (!config.yPadding) {
-            config.yPadding = 25;            
-        }
-        if (!config.xWidth) {
-            config.xWidth = 8;
-        }
-        if (!config.yWidth) {
-            config.yWidth = 3;
-        }
-
-        // add text
-        let addText = this.make.text({
-            x: config.xIndex * grid.cellWidth,
-            y: config.yIndex * grid.cellHeight,
-            padding: { x: config.xPadding, y: config.yPadding },
-            text: text,
-            style: {
-                fontFamily: (config.fontFamily ? config.fontFamily : 'Arial'),
-                fontSize: (config.fontSize ? config.fontSize : '70px'),
-                color: (config.color ? config.color : 'black'),
-                align: (config.align ? config.align : 'center'),
-                fixedWidth: config.xWidth * grid.cellWidth,
-                fixedHeight: config.yWidth * grid.cellHeight,
-                wordWrap: {
-                    width: (config.xWidth * grid.cellWidth)-(config.xPadding*2),
-                },
-            },
-        });
-        if (config.backgroundColor) {
-            addText.setBackgroundColor(config.backgroundColor);
-        }
-        if (config.fontStyle) {
-            addText.setFontStyle(config.fontStyle);
-        }
-        return addText;        
     }
 }
