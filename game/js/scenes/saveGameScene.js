@@ -36,15 +36,15 @@ class SaveGameScene extends Phaser.Scene {
         });
 
         // create user title
-        let nameText = GameText.addText(this, this.grid, "Create an account:", {
-            xIndex : 1,
-            yIndex : 8,
-            xWidth : 16,
-            yWidth : 3,
-            fontSize : '70px',
-            color: 'white',
+        this.nameText = new GameText(this, {
+            text : 'Create an account:',
+            width : 16,
+            height : 3,
+            fontSize : 70,
+            fontColor : 'white'
         });
-        Align.centerH(nameText);
+        this.grid.placeAtIndex(this.grid.getFirstCellInRow(8), this.nameText);
+        Align.centerH(this.nameText);
 
         // add html form
         this.form = this.add.dom(0, 0).createFromCache('userForm');

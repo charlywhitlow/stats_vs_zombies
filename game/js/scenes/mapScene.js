@@ -50,42 +50,47 @@ class MapScene extends Phaser.Scene {
         this.grid.placeAtIndex(135, this.mapPanel);
         Align.centerH(this.mapPanel);
         Align.stretchToGameH(this.mapPanel, 0.62);
-        this.mapPanel.setInteractive().on('pointerup', this.launchGame, this);
 
         // build map
         this.mapJSON = this.cache.json.get('zone')["map"];
         this.buildMap(this.mapJSON);
 
         // add zone text
-        GameText.addText(this, this.grid, "Zone "+this.user.zone, {
-            xIndex : 1,
-            yIndex : 3,
-            xWidth : 16,
-            yWidth : 3,
-            fontSize : '80px',
-            fontStyle : 'bold',
-            color: 'red',
+        this.zoneText = new GameText(this, {
+            text : 'Zone '+this.user.zone,
+            width : 16,
+            height : 3,
+            fontSize : 80,
+            fontColor : 'red',
+            fontStyle : 'bold'
         });
+        this.grid.placeAtIndex(this.grid.getFirstCellInRow(3), this.zoneText);
+        Align.centerH(this.zoneText);
 
         // add level text
-        GameText.addText(this, this.grid, "Level "+this.user.level, {
-            xIndex : 1,
-            yIndex : 5,
-            xWidth : 16,
-            yWidth : 3,
-            fontSize : '70px',
-            color: 'red',
+        this.levelText = new GameText(this, {
+            text : 'Level '+this.user.level,
+            width : 16,
+            height : 3,
+            fontSize : 70,
+            fontColor : 'red'
         });
+        this.grid.placeAtIndex(this.grid.getFirstCellInRow(5), this.levelText);
+        Align.centerH(this.levelText);
 
-        // tap map to start text
-        GameText.addText(this, this.grid, "Tap map to start", {
-            xIndex : 1,
-            yIndex : 28,
-            xWidth : 16,
-            yWidth : 3,
-            fontSize : '70px',
-            color: 'red',            
+        // add start button
+        this.startButton = new GameText(this, {
+            text : 'GO',
+            width : 5,
+            height : 1.5,
+            fontSize : 50,
+            yPadding : 12,
+            fontColor : 'white',
+            backgroundColor: '#CC0000',
         });
+        this.grid.placeAtIndex(this.grid.getFirstCellInRow(28), this.startButton); // index 510
+        Align.centerH(this.startButton);
+        this.startButton.setInteractive().on('pointerdown', this.launchGame.bind(this));
 
         // add back button
         this.backButton = new BackButton({
@@ -142,7 +147,6 @@ class MapScene extends Phaser.Scene {
     launchGame(){
         // create question queue (for testing only- created in new/load game)
         if (!this.user.hasOwnProperty('questionQueue')){
-            console.log('create question/answer queue (TESTING ONLY)');
             let questionDeck = this.cache.json.get('zone')["questionDeck"];
             this.user.questionQueue = new QuestionQueue(questionDeck);
         }

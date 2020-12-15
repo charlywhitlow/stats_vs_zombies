@@ -51,39 +51,42 @@ class StoryScene extends Phaser.Scene {
         });
 
         // add skip button
-        this.skipButton = GameText.addText(this, this.grid, "Skip Intro", {
-            xWidth : 5,
-            yWidth : 1.5,
-            xPadding: 4,
-            yPadding: 8,
-            fontSize : '48px',
+        this.skipButton = new GameText(this, {
+            text : 'Skip Intro',
+            width : 5,
+            height : 1.5,
+            fontSize : 50,
+            yPadding : 12,
+            fontColor : 'black',
             backgroundColor: 'darkgrey',
-            color: 'black',
         });
-        this.grid.placeAtIndex(510, this.skipButton);
+        this.grid.placeAtIndex(this.grid.getFirstCellInRow(28), this.skipButton);
+        Align.centerH(this.skipButton);
         this.skipButton.setInteractive().on('pointerdown', this.launchGame.bind(this));
 
-        // add text object to add to
-        this.text = GameText.addText(this, this.grid, "", {
-            xIndex : 1,
-            yIndex : 3.4,
-            xWidth : this.grid.cols -2,
-            yWidth : this.grid.rows,
-            fontSize : '56px',
-            color: '#CC0000',
-            wordWrap: 90,
-            align: 'left'
+        // add blank text object to add to
+        this.storyText = new GameText(this, {
+            text : '',
+            width : this.grid.cols -2,
+            height : this.grid.rows,
+            fontSize : 58,
+            yPadding : 12,
+            fontColor : '#CC0000',
+            wordWrap : true, // 90
+            align : 'left'
         });
+        this.grid.placeAtIndex(this.grid.getFirstCellInRow(3.5), this.storyText);
+        Align.centerH(this.storyText);
 
         // loop through characters in story and add to text object
         let chars = this.story.split('');
         let i = 0;
         this.time.addEvent({ delay: 250, callback: function(){
             this.time.addEvent({ delay: 20, callback: function(){
-                this.text.setText(this.text.text + chars[i])
+                this.storyText.setText(this.storyText.text + chars[i])
                 i++;
+                // replace button
                 if (i==this.story.length) {
-                    // add start button
                     this.time.addEvent({ delay: 200, callback: function(){
                         this.skipButton.destroy();
                         this.addStartButton();
@@ -93,18 +96,18 @@ class StoryScene extends Phaser.Scene {
         }, callbackScope: this, loop: false});
     }
     addStartButton(){
-        this.startButton = GameText.addText(this, this.grid, "GO", {
-            xIndex : 0,
-            yIndex : 0,
-            xWidth : 4.2,
-            yWidth : 2.1,
+        this.startButton = new GameText(this, {
+            text : 'GO',
+            width : 5,
+            height : 1.5,
+            fontSize : 50,
+            yPadding : 12,
+            fontColor : 'white',
             backgroundColor: '#CC0000',
-            fontSize : '54px',
-            color: 'white',
         });
-        this.startButton.setInteractive().on('pointerdown', this.launchGame.bind(this));
-        this.grid.placeAtIndex(510, this.startButton);
+        this.grid.placeAtIndex(this.grid.getFirstCellInRow(28), this.startButton);
         Align.centerH(this.startButton);
+        this.startButton.setInteractive().on('pointerdown', this.launchGame.bind(this));
     }
     launchGame(){
         this.scene.start("MapScene", this.user);
