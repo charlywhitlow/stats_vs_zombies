@@ -18,18 +18,16 @@ class MenuScene extends Phaser.Scene {
             cols: 18,
         });
 
-        // add stats vs zombie title
-        let titleConfig = {
-            xIndex : 1,
-            yIndex : 4,
-            xWidth : 16,
-            yWidth : 3,
-            fontSize : '90px',
-            fontStyle : 'bold',
-            color: 'white',
-        };
-        let titleText = GameText.addText(this, this.grid, "Stats Vs Zombies", titleConfig);
-        Align.centerH(titleText);
+        // title text
+        this.titleText = new GameText(this, {
+            text : 'Stats Vs Zombies',
+            width : 16,
+            height : 8,
+            fontSize : 90,
+            fontColor : 'white'
+        });
+        this.grid.placeAtIndex(this.grid.getFirstCellInRow(4), this.titleText);
+        Align.centerH(this.titleText);
 
         // add buttons
         this.addButtons();
@@ -38,57 +36,29 @@ class MenuScene extends Phaser.Scene {
         this.cameras.main.fadeFrom(100, 0, 0, 0);
     }
     addButtons(){
-        let newGameConfig = {
-            xIndex : 1,
-            yIndex : 11,
-            xWidth : 10,
-            yWidth : 2.5,
-            backgroundColor: 'lightgrey',
-            fontSize : '70px',
-            color: 'black',
-        };
-        let newGameButton = GameText.addText(this, this.grid, "New Game", newGameConfig);
-        Align.centerH(newGameButton);
-        newGameButton.setInteractive().on('pointerdown', this.newGame.bind(this));
+        // new game
+        this.newGameButton = new MenuButton(this, "New Game");
+        this.grid.placeAtIndex(this.grid.getFirstCellInRow(11), this.newGameButton);
+        Align.centerH(this.newGameButton);
+        this.newGameButton.setInteractive().on('pointerdown', this.newGame.bind(this));
 
-        let loadGameConfig = {
-            xIndex : 1,
-            yIndex : 15,
-            xWidth : 10,
-            yWidth : 2.5,
-            backgroundColor: 'lightgrey',
-            fontSize : '70px',
-            color: 'black',
-        };
-        let loadGameButton = GameText.addText(this, this.grid, "Load Game", loadGameConfig);
-        Align.centerH(loadGameButton);
-        loadGameButton.setInteractive().on('pointerdown', this.loadGame.bind(this));
+        // load game
+        this.loadGameButton = new MenuButton(this, "Load Game");
+        this.grid.placeAtIndex(this.grid.getFirstCellInRow(15), this.loadGameButton);
+        Align.centerH(this.loadGameButton);
+        this.loadGameButton.setInteractive().on('pointerdown', this.loadGame.bind(this));
 
-        let leaderboardConfig = {
-            xIndex : 1,
-            yIndex : 19,
-            xWidth : 10,
-            yWidth : 2.5,
-            backgroundColor: 'lightgrey',
-            fontSize : '70px',
-            color: 'black',
-        };
-        let leaderboardButton = GameText.addText(this, this.grid, "Leaderboard", leaderboardConfig);
-        Align.centerH(leaderboardButton);
-        leaderboardButton.setInteractive().on('pointerdown', this.leaderboard.bind(this));
+        // leaderboard
+        this.leaderboardButton = new MenuButton(this, "Leaderboard");
+        this.grid.placeAtIndex(this.grid.getFirstCellInRow(19), this.leaderboardButton);
+        Align.centerH(this.leaderboardButton);
+        this.leaderboardButton.setInteractive().on('pointerdown', this.leaderboard.bind(this));
 
-        let aboutConfig = {
-            xIndex : 1,
-            yIndex : 23,
-            xWidth : 10,
-            yWidth : 2.5,
-            backgroundColor: 'lightgrey',
-            fontSize : '70px',
-            color: 'black',
-        };
-        let aboutButton = GameText.addText(this, this.grid, "About", aboutConfig);
-        Align.centerH(aboutButton);
-        aboutButton.setInteractive().on('pointerdown', this.about.bind(this));
+        // about
+        this.aboutButton = new MenuButton(this, "About");
+        this.grid.placeAtIndex(this.grid.getFirstCellInRow(23), this.aboutButton);
+        Align.centerH(this.aboutButton);
+        this.aboutButton.setInteractive().on('pointerdown', this.about.bind(this));
     }
     newGame(){
         this.scene.start("NewGameScene");
