@@ -1,6 +1,10 @@
 # Stats vs Zombies
 
-The game can be played at: https://stats-vs-zombies.herokuapp.com
+The game can be played at:
+
+* https://stats-vs-zombies.herokuapp.com
+
+Please note it's hosted with Heroku's free tier so you may need to wait 5-10 seconds whilst the app boots up
 
 It works best in Chrome, and you will need to view in a mobile browser (or on desktop using an emulator e.g. https://developers.google.com/web/tools/chrome-devtools/device-mode)
 
@@ -57,11 +61,11 @@ ________________
     }'
 
 ________________
-## Dev Setup
+## Install locally
 
 1. Create .env file
     * copy config/env_template into root dir and rename .env
-    * populate with mongodb URI and any other fields
+    * update with your mongoDB URI
 
 2. Install program
     * npm install
