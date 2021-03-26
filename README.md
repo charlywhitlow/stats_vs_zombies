@@ -13,7 +13,7 @@ ________________
 ### status
 
     curl -X GET \
-    http://localhost:3000/scores \
+    http://localhost:3000/status \
     -H 'Content-Type: application/json'
 
 ### check-username

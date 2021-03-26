@@ -1,11 +1,12 @@
 const express = require('express');
 const asyncMiddleware = require('../middleware/asyncMiddleware');
 const UserModel = require('../models/userModel');
+const cors = require('cors');
 
 const router = express.Router();
 
 // status
-router.get('/status', (req, res, next) => {
+router.get('/status', cors(), (req, res, next) => {
   res.status(200);
   res.json({ 'status': 'ok' });
 });
